@@ -21,7 +21,7 @@ FIB:
     $add $v0, $v0, $s0, $zero, 0, 0
 
 HALT_CONDITION:
-    add $v0, $zero, $zero, $zero, 0, 0
+    add $v0, $zero, $zero, $imm1, 1, 0
 
     lw $ra, &sp, &imm1, &zero, 2, 0
     lw $s0, &sp, &imm1, &zero, 1, 0
