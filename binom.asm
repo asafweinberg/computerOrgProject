@@ -1,3 +1,8 @@
+	lw $a0, $zero, $imm1, $zero, 0x100, 0
+	lw $a0, $zero, $imm1, $zero, 0x101, 0
+	beq $zero,$zero,$zero,$ra,0,0
+	sw $v0, $zero, imm1, $zero, 0x102, 0
+
 FIB:
     add $sp,$sp,$zero,$imm1,-3,0
     sw $zero,&sp,&imm1,&ra,2,0
