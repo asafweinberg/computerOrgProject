@@ -2,6 +2,7 @@
 	lw $a0, $zero, $imm1, $zero, 0x101, 0
 	beq $zero,$zero,$zero,$ra,0,0
 	sw $v0, $zero, imm1, $zero, 0x102, 0
+	add $sp, $zero, imm1, $zero, 2048, 0
 
 FIB:
     add $sp,$sp,$zero,$imm1,-3,0
