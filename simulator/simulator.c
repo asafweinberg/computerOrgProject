@@ -4,7 +4,7 @@
 
 int debug = true;
 
-static int registers[16];
+static int registers[regSize];
 static instructionArray* instructions;
 
 int main(int argc, char* argv[])
@@ -12,6 +12,13 @@ int main(int argc, char* argv[])
     int pc = 0;
 
     initialization(argc, argv);
+
+    while (pc < instructions -> length)
+    {
+        /* code */
+    }
+    
+
     printInstructions();
 }
 
@@ -155,6 +162,7 @@ void printInstructions()
     {
         printInstruct(i);
     }
+    printf("instruction count = %d", instructions -> length);
     
 }
 
