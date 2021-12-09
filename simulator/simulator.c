@@ -9,13 +9,23 @@ static instructionArray* instructions;
 
 int main(int argc, char* argv[])
 {
-    int pc = 0;
+    int pc, clock;
+    pc = 0;
 
     initialization(argc, argv);
 
     while (pc < instructions -> length)
     {
-        /* code */
+        writeTraceOutput(pc);
+        clock = updateClock();
+        if (checkInteruption()) //TODO
+        {
+            pc = handleInterupt(); //TODO
+        } 
+        if (!executeInstruction(registers, instructions->instructionArr[pc], &pc))
+        {
+            exitSimulator()
+        }
     }
     
 

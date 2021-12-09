@@ -1,11 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-
-
-#define true 1
-#define false 0
-#define instructionSize 7
-#define regSize 16
+#include "modules.h"
 
 int initialization(int argc, char* argv[]);
 void initSimulator(char* imemin, char* regout, char* trace, char* hwregtrace);
@@ -18,8 +11,3 @@ void printInstruct(int index);
 
 
 
-typedef struct instruction_Array
-{
-    int length;
-    int **instructionArr;
-} instructionArray;
