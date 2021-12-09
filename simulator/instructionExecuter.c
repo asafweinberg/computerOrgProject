@@ -7,7 +7,7 @@
 #define imm1Index 5
 #define imm2Index 6
 
-void execute(int* registers, int* instruction, int* pc)
+int executeInstruction(int* registers, int* instruction, int* pc)
 {
     int opCode;
     int rdVal, rsVal, rtVal, rmVal;
