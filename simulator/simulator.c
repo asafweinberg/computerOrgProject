@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
         } 
         if (!executeInstruction(registers, instructions->instructionArr[pc], &pc))
         {
-            exitSimulator()
+            exitSimulator();
         }
     }
     
@@ -156,7 +156,7 @@ int initialization(int argc, char* argv[])
     initSimulator(imemin, regout, trace, hwregtrace);
     // initMemory(dmemin, dmemout);
     // initDisk(diskin, diskout);
-    // initInterapts(irq2in);
+    // initInterupts(irq2in);
     // initClock(cycles);
     // initLeds(leds);
     // initDisplay(display7seg);
