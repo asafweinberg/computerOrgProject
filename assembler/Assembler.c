@@ -6,12 +6,15 @@
 #define MAX_LINE_LEN  500
 #define MAX_LABEL_LEN 50
 #define MAX_INSTRUCTIONS_COUNT 4096
+#define MAX_DATA_MEMORY_LEN  4096
+
 
 
 #define true 1
 #define false 0
 
 int labelCount=0;
+int maxDataAdress=0;
 char* opcodeTable[] = {"add", "sub", "mac","and", "or", "xor", "sll", "sra","srl", "beq", "bne", "blt", "bgt", "ble", "bge", "jal", "lw", "sw", "reti", "in", "out", "halt"};
 
 char* registerTable[]={"$zero", "$imm1", "$imm2" ,"$v0", "$a0", "$a1","$a2", "$t0", "$t1", "$t2", "$s0", "$s1", "$s2", "$gp", "$sp", "$ra"};
@@ -24,6 +27,8 @@ typedef struct
 
 labelAddress labelAddressTable[MAX_INSTRUCTIONS_COUNT];
 char commandParts[7][100] = {"","","","","","",""}; // TODO change to less than 100 maybe
+
+int dataMemory [MAX_DATA_MEMORY_LEN];
 
 void removeComments(char* line);
 void changeToLowerCase(char* line);
@@ -232,7 +237,7 @@ int getLabelAddress(char* label)
 
 void encodeCommand(char* encodedLine)
 {
-long long opcode, rd, rs, rt, rm, imm1, imm2;
+long long opcode, rd, rs, rt, rm, imm1, imm2; //TODO check if one long is enough
 // short imm1, imm2;
 long long codeNum;
 
@@ -273,6 +278,23 @@ long long codeNum;
 int isDataCommand(char* line)
 {
 	return(strchr(line, '.') != NULL);
+}
+
+void handleDataCommand(char* line)
+{   
+    char* sep = " \t";
+
+    // Returns first token 
+    strtok(line , sep);
+    char* address = strtok(NULL, sep);
+    char* data = strtok(NULL, sep);
+
+    int currentAdd = (int)strtol(address, NULL, 0);
+	dataMemory[currentAdd]=(int)strtol(data, NULL, 0);
+			if(currentAdd > maxDataAdress)
+				maxDataAdress = currentAdd;
+
+
 }
 
 void passOne(char * fileName)
@@ -322,15 +344,16 @@ void passOne(char * fileName)
 void passTwo(char * progInst, char * instMem, char * dataMem)
 {
     char line[MAX_LINE_LEN+1]; //TODO: check exactly how many
+    char originalLine[MAX_LINE_LEN+1];
     char * potenLabel, encodedLine[100]; //CHECK EXACTLY
-    int containsCommand;
+    int containsCommand, i;
     FILE* progFile = fopen(progInst,"r");
     FILE* instFile = fopen(instMem,"w");
     FILE* dataFile = fopen(dataMem,"w");
 
     while(fgets (line, MAX_LINE_LEN+1, progFile))
 	{    
-        
+        strcpy(originalLine,line);
 		removeComments(line);
         // skipDataInst(line); 
 		changeToLowerCase(line);
@@ -340,27 +363,31 @@ void passTwo(char * progInst, char * instMem, char * dataMem)
             continue;
         if (isDataCommand(line))
         {
-            //TODO handle data
+            handleDataCommand(originalLine);
             continue;
         }
+
         containsCommand = handleInstr(line,&potenLabel,2);
 
         if(containsCommand) 
         {
-            printf("%s\n",commandParts[0]);
-            printf("%s\n",commandParts[1]);
-            printf("%s\n",commandParts[2]);
-            printf("%s\n",commandParts[3]);
-            printf("%s\n",commandParts[4]);
-            printf("%s\n",commandParts[5]);
-            printf("%s\n",commandParts[6]);
-            printf("\nNEXT COMMAND\n");
+            // printf("%s\n",commandParts[0]);
+            // printf("%s\n",commandParts[1]);
+            // printf("%s\n",commandParts[2]);
+            // printf("%s\n",commandParts[3]);
+            // printf("%s\n",commandParts[4]);
+            // printf("%s\n",commandParts[5]);
+            // printf("%s\n",commandParts[6]);
+            // printf("\nNEXT COMMAND\n");
 
             encodeCommand(encodedLine);
             fprintf(instFile, "%s", encodedLine); 
         }
 
     }
+
+    for(i=0 ; i<= maxDataAdress ; i++)
+		fprintf(dataFile , "%08X\n" , dataMemory[i]);
 
     fclose(instFile);
 	fclose(instFile);
