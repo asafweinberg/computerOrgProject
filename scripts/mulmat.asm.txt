@@ -3,7 +3,7 @@ lw $a1, $zero, $imm1, $zero, 0x110, 0 // load second, right matrix to a1
 add $s0, $zero, $zero, $zero, 0, 0 //initialize i=0
 JZERO:
 add $s1, $zero, $zero, $zero, 0, 0 //initialize j=0
-KZERO
+KZERO:
 add $s2, $zero, $zero, $zero, 0, 0 //initialize k=0
 //open v0[i][j]
 sll $t2, $s0, $imm1, $zero, 2, 0 //t2 = i*4(row size)
