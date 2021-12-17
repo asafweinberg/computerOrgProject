@@ -52,18 +52,18 @@ int executeInstruction(int* registers, int* instruction, int* pc)
                 *pc = rmVal && 0xFFF;
                 break;
             case 16:
-                registers[instruction[rdIndex]] = execLw(rsVal, rtVal, rmVal);
+                registers[instruction[rdIndex]] = execLw(rsVal, rtVal, rmVal); // TODO: implement on memory
                 *pc = *pc + 1;
                 break;
             case 17:
-                execSw(rdVal, rsVal, rtVal, rmVal);
+                execSw(rdVal, rsVal, rtVal, rmVal); // TODO: implement on memory
                 *pc = *pc + 1;
                 break;
             case 18:
                 *pc = getIoRegister(7); // TODO: implement on IO module or add implementation here and send directly to modules?
                 break;
             case 19:
-                registers[instruction[rdIndex]] = getIoRegister(rsVal + rtVal);
+                registers[instruction[rdIndex]] = getIoRegister(rsVal + rtVal); // TODO: implement function 
                 *pc = *pc + 1;
                 break;
             case 20:
@@ -154,12 +154,12 @@ int execBranch(int opCode, int rsVal, int rtVal)
 
 int execLw(int rsVal, int rtVal, int rmVal)
 {
-    int diskValue = diskRead(rsVal+rtVal); // TODO: implement on disk module
+    int diskValue = memRead(rsVal+rtVal); // TODO: implement on disk module
     return diskValue + rmVal;
 }
 
 void execSw(int rdVal, int rsVal, int rtVal, int rmVal)
 {
     int newVal = rdVal + rmVal; 
-    diskWrite(rsVal + rtVal); // TODO: implement on disk module
+    memWrite(rsVal + rtVal); // TODO: implement on disk module
 }

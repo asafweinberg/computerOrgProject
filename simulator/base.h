@@ -4,7 +4,7 @@
 
 #define true 1
 #define false 0
-#define instructionSize 7
+#define INSTRUCTION_SIZE 7
 #define regSize 16
 
 

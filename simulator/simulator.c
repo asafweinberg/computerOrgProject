@@ -17,10 +17,11 @@ int main(int argc, char* argv[])
     while (pc < instructions -> length)
     {
         writeTraceOutput(pc);
-        clock = updateClock();
+        clock = updateClock(); // TODO: check where to update the clock
         if (checkInteruption()) //TODO
         {
-            pc = handleInterupt(); //TODO
+            pc = startInterupt(); //TODO
+            // continue; // TODO: check when to start handling the interupt
         } 
         if (!executeInstruction(registers, instructions->instructionArr[pc], &pc))
         {
@@ -28,6 +29,7 @@ int main(int argc, char* argv[])
         }
     }
     
+    exitSimulator();
 
     printInstructions();
 }
@@ -55,7 +57,7 @@ void initInstructions(char* fileName)
         exit(1);
     }
 
-    tempInstructions = (int**)calloc(4026, sizeof(int*));
+    tempInstructions = (int**)calloc(4096, sizeof(int*));
     line = (char*)calloc(14,sizeof(char));
 
     while ((getline(&line, &lineLength, fp)) != -1)
@@ -93,7 +95,7 @@ void addInstruction(int **arr, char *line, int index)
     int imm1 = getIntFrombinary(binaryIns, 24, 35); //12-23
     int imm2 = getIntFrombinary(binaryIns, 36, 47); //0-11
 
-    arr[index] = (int*) calloc(instructionSize, sizeof(int));
+    arr[index] = (int*) calloc(INSTRUCTION_SIZE, sizeof(int));
     if (!arr[index])
     {
         printf("error allocating new instruction");
@@ -153,14 +155,14 @@ int initialization(int argc, char* argv[])
     // monitor = argv[13];
     // monitorYuv = argv[14];
     
-    initSimulator(imemin, regout, trace, hwregtrace);
-    // initMemory(dmemin, dmemout);
-    // initDisk(diskin, diskout);
-    // initInterupts(irq2in);
-    // initClock(cycles);
-    // initLeds(leds);
-    // initDisplay(display7seg);
-    // initMonitor(monitor, monitorYuv);
+    initSimulator(imemin, regout, trace, hwregtrace); //TODO: check who's handling hwregtrace file
+    initMemory(dmemin, dmemout);
+    initDisk(diskin, diskout);
+    initInterupts(irq2in);
+    initClock(cycles);
+    initLeds(leds);
+    initDisplay(display7seg); //TODO: check what is display
+    initMonitor(monitor, monitorYuv);
 
     return true; //TODO: check return value when error
 }
