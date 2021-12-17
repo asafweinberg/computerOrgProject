@@ -324,9 +324,9 @@ void passOne(char * fileName)
             continue;
 
             //3 cases - 1)only label 2)only instruction 3)both
-        containsCommand = handleInstr(line,&potenLabel,1);
+        containsCommand = handleInstr(line, &potenLabel, 1);
 
-        if(!strcmp(potenLabel,"")) //only command
+        if(!strcmp(potenLabel, "")) //only command
         {
             PC++;
         }
@@ -391,7 +391,7 @@ void passTwo(char * progInst, char * instMem, char * dataMem)
 
     }
 
-    for(i=0 ; i<= maxDataAdress ; i++)
+    for(i=0 ; i<= maxDataAdress ; i++) //TODO: check from where to write in file
 		fprintf(dataFile , "%08X\n" , dataMemory[i]);
 
     fclose(instFile);
