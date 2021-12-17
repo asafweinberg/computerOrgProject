@@ -58,12 +58,17 @@ int main(int argc, char *argv[])
 		passOne(progInst);
 		passTwo(progInst, instMem, dataMem);
 	}
+
+    else
+    {
+        printf("error in arguments\n");
+    }
 }
 
 
 void removeComments(char* line)
 {
-char* pos;
+    char* pos;
 	pos = strchr(line, '#');
 	if (pos)
 		(*pos) = 0;
@@ -237,9 +242,9 @@ int getLabelAddress(char* label)
 
 void encodeCommand(char* encodedLine)
 {
-long long opcode, rd, rs, rt, rm, imm1, imm2; //TODO check if one long is enough
-// short imm1, imm2;
-long long codeNum;
+    long long opcode, rd, rs, rt, rm, imm1, imm2; //TODO check if one long is enough
+    // short imm1, imm2;
+    long long codeNum;
 
 	opcode = opcodeNum(commandParts[0]);
 	rd = registerNum(commandParts[1]);
@@ -265,14 +270,14 @@ long long codeNum;
 
 	else
     {    
-        imm2=(int)strtol(commandParts[6], NULL, 0);
-        imm2= imm2 & 0xFFF;
+        imm2 = (int)strtol(commandParts[6], NULL, 0);
+        imm2 = imm2 & 0xFFF;
     }
 
     codeNum = (opcode<<40) | (rd<<36) | (rs<<32) | (rt<<28) | (rm<<24) | (imm1<<12) | (imm2); 
     // codeNum = codeNum | (imm1<<12) | (imm2);
 		
-	sprintf(encodedLine,"%012llX\n",codeNum); 
+	sprintf(encodedLine, "%012llX\n", codeNum); 
 }
 
 int isDataCommand(char* line)
@@ -328,7 +333,7 @@ void passOne(char * fileName)
 
         else
         {
-            strcpy(labelAddressTable[labelCount].label,potenLabel);
+            strcpy(labelAddressTable[labelCount].label,potenLabel); //TODO check with garibi about doubled label
 			labelAddressTable[labelCount].address=PC;
 			labelCount++;
             if(containsCommand) //label+command
