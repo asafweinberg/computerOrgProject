@@ -44,7 +44,7 @@ int isDataCommand(char* line);
 void passOne(char * fileName);
 void passTwo(char * progInst, char * instMem, char * dataMem);
 
-void printlabelAddressTable();
+// void printlabelAddressTable();
 
 
 int main(int argc, char *argv[])
@@ -315,7 +315,7 @@ void passOne(char * fileName)
 
 		removeComments(line);
         skipDataInst(line); 
-		changeToLowerCase(line); //TODO: check about it if there are difference in the label between lower and uper
+		// changeToLowerCase(line); //TODO: check about it if there are difference in the label between lower and uper
         deleteWhiteSpaces(line);
 
         // printf("%s\n",line);
@@ -361,7 +361,7 @@ void passTwo(char * progInst, char * instMem, char * dataMem)
         strcpy(originalLine,line);
 		removeComments(line);
         // skipDataInst(line); 
-		changeToLowerCase(line);
+		// changeToLowerCase(line);
         deleteWhiteSpaces(line);
         
 		if(emptyLine(line))
@@ -376,15 +376,6 @@ void passTwo(char * progInst, char * instMem, char * dataMem)
 
         if(containsCommand) 
         {
-            // printf("%s\n",commandParts[0]);
-            // printf("%s\n",commandParts[1]);
-            // printf("%s\n",commandParts[2]);
-            // printf("%s\n",commandParts[3]);
-            // printf("%s\n",commandParts[4]);
-            // printf("%s\n",commandParts[5]);
-            // printf("%s\n",commandParts[6]);
-            // printf("\nNEXT COMMAND\n");
-
             encodeCommand(encodedLine);
             fprintf(instFile, "%s", encodedLine); 
         }
@@ -399,10 +390,10 @@ void passTwo(char * progInst, char * instMem, char * dataMem)
 	fclose(dataFile);
 }
 
-void printlabelAddressTable()
-{
-    for(int i=0 ; i<labelCount ; i++)
-    {
-        printf("label: %s addr: %d \n", labelAddressTable[i].label, labelAddressTable[i].address);
-    }
-}
+// void printlabelAddressTable()
+// {
+//     for(int i=0 ; i<labelCount ; i++)
+//     {
+//         printf("label: %s addr: %d \n", labelAddressTable[i].label, labelAddressTable[i].address);
+//     }
+// }
