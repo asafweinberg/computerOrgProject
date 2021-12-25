@@ -55,6 +55,10 @@ int writeClock(int address, int value)
         break;
     case IO_TIMER_ENABLE:
         timerEnabled = value;
+        if(value != 0 || value !=1)
+        {
+            printf("error on write clock, needs to check how to approach to timerEnable not boolean, given value = %d", timerEnabled);
+        }
         break;
     case IO_TIMER_MAX:
         timerMax = value;

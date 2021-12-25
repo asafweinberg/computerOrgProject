@@ -47,4 +47,7 @@ void exitDisplay();
 
 
 
-void initMonitor(monitor, monitorYuv);
+void initMonitor(char* monitor, char* monitorYuv);
+int readMonitor(int address);
+int writeMonitor(int address, int value);
+void exitMonitor();
