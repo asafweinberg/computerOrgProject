@@ -56,16 +56,16 @@ int writeMonitor(int address, int value)
     switch (address)
     {
     case IO_MONITOR_ADDR:
-        monitoraddr = value;
+        monitoraddr = value; //TODO: convert to short
         break;
     case IO_MONITOR_CMD:
         writePixel(value);
         break;
     case IO_MONITOR_DATA:
-        monitordata = value;
+        monitordata = value; //TODO: convert to char
         break;
     default:
-        printf("readMonitor got a wrong io register number: %d", address);
+        printf("writeMonitor got a wrong io register number: %d", address);
         break;
     }
     return -1;
