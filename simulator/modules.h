@@ -1,49 +1,48 @@
 #include "base.h"
 
+
 int executeInstruction(int* registers, int* instruction, int* pc);
 int execArithmetic(int opCode, int rsVal, int rtVal, int rmVal);
 int execBranch(int opCode, int rsVal, int rtVal);
 
 
-    // initSimulator(imemin, regout, trace, hwregtrace); //TODO: check who's handling hwregtrace file
-    // initMemory(dmemin, dmemout);
-    // initDisk(diskin, diskout);
-    // initInterupts(irq2in);
-    // initClock(cycles);
-    // initLeds(leds);
-    // initDisplay(display7seg); //TODO: check what is display
-    // initMonitor(monitor, monitorYuv);
 
 
-    initMemory(dmemin, dmemout);
-    readMemory(int address);
-    writeMemory(int address, int value);
-    exitMemory();
+void initMemory(dmemin, dmemout);
+int readMemory(int address);
+int writeMemory(int address, int value);
+void exitMemory();
 
 
-    initDisk(diskin, diskout);
+void initDisk(diskin, diskout);
 
 
 
 
-    initInterupts(irq2in);
+void initInterupts(irq2in);
+int readInterupts(int address);
 
 
 
 
-    initClock(cycles);
+void initClock(char* cycles);
+int readClock(int address);
+int writeClock(int address, int value);
+void exitClock();
+int updateClock();
+
+
+
+void initLeds(char* outputFileName);
+int readLeds(int address);
+int writeLeds(int address, int value);
+void exitLeds();
+
+
+
+void initDisplay(display7seg); //TODO: check what is display
 
 
 
 
-    initLeds(leds);
-
-
-
-
-    initDisplay(display7seg); //TODO: check what is display
-
-
-
-
-    initMonitor(monitor, monitorYuv);
+void initMonitor(monitor, monitorYuv);

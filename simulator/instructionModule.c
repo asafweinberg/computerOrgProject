@@ -1,4 +1,4 @@
-#include "base.h"
+#include "modules.h"
 
 #define rdIndex 1
 #define rsIndex 2
@@ -154,12 +154,110 @@ int execBranch(int opCode, int rsVal, int rtVal)
 
 int execLw(int rsVal, int rtVal, int rmVal)
 {
-    int diskValue = memRead(rsVal+rtVal); // TODO: implement on disk module
+    int diskValue = readMemory(rsVal+rtVal);
     return diskValue + rmVal;
 }
 
 void execSw(int rdVal, int rsVal, int rtVal, int rmVal)
 {
     int newVal = rdVal + rmVal; 
-    memWrite(rsVal + rtVal); // TODO: implement on disk module
+    writeMemory(rsVal + rtVal, newVal);
+}
+
+
+int getIoRegister(int address)
+{
+    switch (address)
+    {
+    case IO_IRQ_ENABLE_0:
+    case IO_IRQ_ENABLE_1:
+    case IO_IRQ_ENABLE_2:
+    case IO_IRQ_STATUS_0:
+    case IO_IRQ_STATUS_1:
+    case IO_IRQ_STATUS_2:
+    case IO_IRQ_HANDLER:
+    case IO_IRQ_RETURN:
+        return  readInterupts(address);
+        break;
+    case IO_CLKS:
+    case IO_TIMER_ENABLE:
+    case IO_TIMER_CURRENT:
+    case IO_TIMER_MAX:
+        return readClock(address);
+        break;
+    case IO_LEDS:
+        return readLeds(address);
+        break;
+    case IO_DISPLAY_7_SEG:
+        return readDisplay(address); //TODO
+        break;
+    case IO_DISK_CMD:
+    case IO_DISK_SECTOR:
+    case IO_DISK_BUFFER:
+    case IO_DISK_STATUS:
+        return readDisk(address); //TODO
+        break;
+    case IO_RESERVED1:
+    case IO_RESERVED2:
+        return readReserved(address); //TODO
+        break;
+    case IO_MONITOR_ADDR:
+    case IO_MONITOR_DATA:
+    case IO_MONITOR_CMD:
+        return readMonitor(address); //TODO
+        break;
+    default:
+        printf("error on getIoRegister, requested address is %d", address);
+        exit(1);
+        break;
+    }
+}
+
+
+int setIoRegister(int address, int value)
+{
+    switch (address)
+    {
+    case IO_IRQ_ENABLE_0:
+    case IO_IRQ_ENABLE_1:
+    case IO_IRQ_ENABLE_2:
+    case IO_IRQ_STATUS_0:
+    case IO_IRQ_STATUS_1:
+    case IO_IRQ_STATUS_2:
+    case IO_IRQ_HANDLER:
+    case IO_IRQ_RETURN:
+        return  writeInterupts(address, value);
+        break;
+    case IO_CLKS:
+    case IO_TIMER_ENABLE:
+    case IO_TIMER_CURRENT:
+    case IO_TIMER_MAX:
+        return writeClock(address, value);
+        break;
+    case IO_LEDS:
+        return writeLeds(address, value);
+        break;
+    case IO_DISPLAY_7_SEG:
+        return writeDisplay(address, value); //TODO
+        break;
+    case IO_DISK_CMD:
+    case IO_DISK_SECTOR:
+    case IO_DISK_BUFFER:
+    case IO_DISK_STATUS:
+        return writeDisk(address, value); //TODO
+        break;
+    case IO_RESERVED1:
+    case IO_RESERVED2:
+        return writeReserved(address, value); //TODO
+        break;
+    case IO_MONITOR_ADDR:
+    case IO_MONITOR_DATA:
+    case IO_MONITOR_CMD:
+        return writeMonitor(address, value); //TODO
+        break;
+    default:
+        printf("error on setIoRegister, requested address is %d, value is: %d", address, value);
+        exit(1);
+        break;
+    }
 }
