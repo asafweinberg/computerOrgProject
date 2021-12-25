@@ -17,7 +17,7 @@ void initMemory(char* dmemin, char* dmemout) {
     int counter = 0;
     int i;
     char* ptr;
-    FILE* memFile = fopen(dmemin,"r");
+    FILE* memFile = fopen(dmemin, "r");
     if (!memFile) {
         printf("error in initMemory in reading dmemin: %s\n", dmemin);
         exit(1);
@@ -63,8 +63,8 @@ void exitMemory() {
         printf("error in exitMemory in writing to dmemout: %s\n", dmemoutAddress);
         exit(1);
     }
-    for(i = 0; i <= lastIndex + 1; i++) {
-		fprintf(dmemoutFile, "%08X\n", memory[i]);
+    for (i = 0; i <= lastIndex + 1; i++) {
+        fprintf(dmemoutFile, "%08X\n", memory[i]);
     }
     fclose(dmemoutFile);
     free(memory);

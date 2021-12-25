@@ -17,7 +17,7 @@ void writeMemory(int address, int value);
 void exitMemory();
 
 
-void initDisk(diskin, diskout);
+void initDisk(char* diskin, char* diskout);
 int readDisk();
 void writeDisk(int address, int value);
 void exitDisk();
@@ -26,7 +26,7 @@ int findDiskLastIndex();
 
 
 
-void initinterrupts(irq2in);
+//void initinterrupts(char* irq2in);
 //int readinterrupts(int address);
 
 
