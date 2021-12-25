@@ -38,7 +38,7 @@ int writeLeds(int address, int value)
     }
     else
     {
-        printf("error read leds with register address: %d", address);
+        printf("error write leds with register address: %d", address);
         exit(1);
         return -1;
     }

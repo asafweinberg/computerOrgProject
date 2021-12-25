@@ -18,10 +18,10 @@ int main(int argc, char* argv[])
     {
         writeTraceOutput(pc);
         clock = updateClock(); // TODO: check where to update the clock
-        if (checkInteruption()) //TODO
+        if (checkinterruption()) //TODO
         {
-            pc = startInterupt(); //TODO
-            // continue; // TODO: check when to start handling the interupt
+            pc = startinterrupt(); //TODO
+            // continue; // TODO: check when to start handling the interrupt
         } 
         if (!executeInstruction(registers, instructions->instructionArr[pc], &pc))
         {
@@ -159,7 +159,7 @@ int initialization(int argc, char* argv[])
     initSimulator(imemin, regout, trace, hwregtrace); //TODO: check who's handling hwregtrace file
     initMemory(dmemin, dmemout);
     initDisk(diskin, diskout);
-    initInterupts(irq2in);
+    initinterrupts(irq2in);
     initClock(cycles);
     initLeds(leds);
     initDisplay(display7seg); //TODO: check what is display

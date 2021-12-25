@@ -19,8 +19,8 @@ void initDisk(diskin, diskout);
 
 
 
-void initInterupts(irq2in);
-int readInterupts(int address);
+void initinterrupts(irq2in);
+int readinterrupts(int address);
 
 
 
@@ -40,8 +40,10 @@ void exitLeds();
 
 
 
-void initDisplay(display7seg); //TODO: check what is display
-
+void initDisplay(char* outputFileName);
+int readDisplay(int address);
+int writeDisplay(int address, int value);
+void exitDisplay();
 
 
 

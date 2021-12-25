@@ -177,7 +177,7 @@ int getIoRegister(int address)
     case IO_IRQ_STATUS_2:
     case IO_IRQ_HANDLER:
     case IO_IRQ_RETURN:
-        return  readInterupts(address);
+        return  readinterrupts(address);
         break;
     case IO_CLKS:
     case IO_TIMER_ENABLE:
@@ -226,7 +226,7 @@ int setIoRegister(int address, int value)
     case IO_IRQ_STATUS_2:
     case IO_IRQ_HANDLER:
     case IO_IRQ_RETURN:
-        return  writeInterupts(address, value);
+        return  writeinterrupts(address, value);
         break;
     case IO_CLKS:
     case IO_TIMER_ENABLE:

@@ -3,7 +3,7 @@
 
 #define CLOCK_MAX 0xFFFFFFFF
 
-unsigned int timercurrent,timerMax, timerEnabled, hasInterupt0, clks;
+unsigned int timercurrent,timerMax, timerEnabled, interrupt0, clks;
 unsigned long clockCycles;
 char* outputFileName;
 
@@ -12,7 +12,7 @@ void initClock(char* cycles)
 {
     clks = 0;
     clockCycles = 0;
-    hasInterupt0 = 0;
+    interrupt0 = 0;
     timercurrent = 0;
     timerEnabled = 0;
     outputFileName = cycles;
@@ -100,18 +100,23 @@ int updateClock()
         if (timercurrent == timerMax)
         {
             timercurrent = 0;
-            hasInterupt0 = 1;
+            interrupt0 = 1;
         }
         else
         {
             if (timercurrent == 0)
             {
                 // TODO: check if needs to stay 1 for the future if the cpu is busy.
-                hasInterupt0 = 0;
+                interrupt0 = 0;
             }
             timercurrent++;
         }
     }
     return clks;
+}
+
+int hasinterrupt0()
+{
+    return interrupt0;
 }
 
