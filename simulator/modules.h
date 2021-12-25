@@ -8,9 +8,9 @@ int execBranch(int opCode, int rsVal, int rtVal);
 
 
 
-void initMemory(dmemin, dmemout);
+void initMemory(char* dmemin, char* dmemout);
 int readMemory(int address);
-int writeMemory(int address, int value);
+void writeMemory(int address, int value);
 void exitMemory();
 
 
