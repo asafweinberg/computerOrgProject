@@ -73,6 +73,10 @@ void exitClock()
     FILE *fp;
 
     fp = fopen(outputFileName, "w");
+    if(!fp)
+    {
+        printf("error opening output file for clock with name: %s", outputFileName);
+    }
     fprintf(fp, "%lu", clockCycles);
     fclose(fp);
 }

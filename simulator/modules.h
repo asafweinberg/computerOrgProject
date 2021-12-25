@@ -20,6 +20,7 @@ void initDisk(diskin, diskout);
 
 
 void initInterupts(irq2in);
+int readInterupts(int address);
 
 
 
@@ -32,8 +33,10 @@ int updateClock();
 
 
 
-void initLeds(leds);
-
+void initLeds(char* outputFileName);
+int readLeds(int address);
+int writeLeds(int address, int value);
+void exitLeds();
 
 
 
