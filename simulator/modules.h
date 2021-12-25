@@ -24,7 +24,7 @@ void initInterupts(irq2in);
 
 
 
-void initClock(cycles);
+void initClock(char* cycles);
 int readClock(int address);
 int writeClock(int address, int value);
 void exitClock();

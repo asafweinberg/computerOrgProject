@@ -72,6 +72,7 @@ void initInstructions(char* fileName)
         instructions->instructionArr[i] = tempInstructions[i];
     }
     
+    fclose(fp);
 }
 
 void addInstruction(int **arr, char *line, int index)

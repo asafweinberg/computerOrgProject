@@ -3,15 +3,19 @@
 
 #define CLOCK_MAX 0xFFFFFFFF
 
-int timercurrent,timerMax, timerEnabled, hasInterupt0, clks;
+unsigned int timercurrent,timerMax, timerEnabled, hasInterupt0, clks;
+unsigned long clockCycles;
+char* outputFileName;
 
 
-void initClock(cycles)
+void initClock(char* cycles)
 {
     clks = 0;
+    clockCycles = 0;
+    hasInterupt0 = 0;
     timercurrent = 0;
     timerEnabled = 0;
-    hasInterupt0 = 0;
+    outputFileName = cycles;
 }
 
 
@@ -20,31 +24,57 @@ int readClock(int address)
     switch (address)
     {
     case IO_CLKS:
-        /* code */
+        return clks;
         break;
     case IO_TIMER_CURRENT:
-        /* code */
+        return timercurrent;
         break;
     case IO_TIMER_ENABLE:
-        /* code */
+        return timerEnabled;
         break;
     case IO_TIMER_MAX:
-        /* code */
+        return timerMax;
         break;
     
     default:
+        printf("readClock got a wrong io register number: %d", address);
         break;
     }
+    return -1;
 }
 
 int writeClock(int address, int value)
 {
-
+    switch (address)
+    {
+    case IO_CLKS:
+        clks = value;
+        break;
+    case IO_TIMER_CURRENT:
+        timercurrent = value;
+        break;
+    case IO_TIMER_ENABLE:
+        timerEnabled = value;
+        break;
+    case IO_TIMER_MAX:
+        timerMax = value;
+        break;
+    
+    default:
+        printf("writeClock got a wrong io register number: %d", address);
+        return -1;
+        break;
+    }
+    return 1;
 }
 
 void exitClock()
 {
+    FILE *fp;
 
+    fp = fopen(outputFileName, "w");
+    fprintf(fp, "%lu", clockCycles);
+    fclose(fp);
 }
 
 
@@ -58,6 +88,7 @@ int updateClock()
     {
         clks++;
     }
+    clockCycles++;
 
 
     if (timerEnabled)
@@ -77,6 +108,6 @@ int updateClock()
             timercurrent++;
         }
     }
-
+    return clks;
 }
 
