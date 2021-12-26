@@ -4,7 +4,7 @@
 	sw $v0, $zero, $imm1, $zero, 0x102, 0
 	add $sp, $zero, $imm1, $zero, 2048, 0
     jal $ra,$zero,$zero,$imm2,0,FIB
-    halt $zero, $zero, $zero, $zero,0,0 
+    halt $zero, $zero, $zero, $zero, 0, 0 
 
 FIB:
     add $sp,$sp,$zero,$imm1,-3,0
