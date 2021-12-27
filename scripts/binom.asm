@@ -1,5 +1,5 @@
 	lw $a0, $zero, $imm1, $zero, 0x100, 0
-	lw $a0, $zero, $imm1, $zero, 0x101, 0
+	lw $a1, $zero, $imm1, $zero, 0x101, 0
 	sw $v0, $zero, $imm1, $zero, 0x102, 0
 	add $sp, $zero, $imm1, $zero, 2048, 0
     jal $ra,$zero,$zero,$imm2,0,BIN
@@ -38,5 +38,5 @@ RETURN:
 
     beq $zero,$zero,$zero,$ra,0,0
 	
-	.word 0x100 4
-	.word 0x101 5
+	.word 0x100 1
+	.word 0x101 0

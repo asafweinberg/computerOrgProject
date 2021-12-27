@@ -8,6 +8,12 @@ int debug = true;
 static int registers[regSize];
 static instructionArray* instructions;
 
+
+//TODO:DELETE
+void printRegisters();
+
+
+
 int main(int argc, char* argv[])
 {
     int pc;
@@ -18,6 +24,7 @@ int main(int argc, char* argv[])
 
     while (pc < instructions->length)
     {
+        printRegisters();
         //writeTraceOutput(pc); // TODO
         updateClock(); // TODO: check where to update the clock
         //updateDisk(); //TODO
@@ -145,6 +152,11 @@ int initialization(int argc, char* argv[])
 {
     char* imemin, * dmemin, * diskin, * irq2in, * dmemout, * regout, * trace, * hwregtrace, * cycles, * leds, * display7seg, * diskout, * monitor, * monitorYuv;
 
+    for (int i = 0; i < regSize; i++)
+    {
+        registers[i] = 0;
+    }
+
     // if (argc != 15)
     // {
     //     printf("error: got %d arguments instead of 14", argc-1);
@@ -192,11 +204,11 @@ int initialization(int argc, char* argv[])
 
 void exitSimulator()
 {
-    exitClock();
+    /*exitClock();
     exitDisplay();
     exitLeds();
     exitMemory();
-    exitMonitor();
+    exitMonitor();*/
     //TODO: exitDisk, exitInterrupts
 }
 
@@ -217,3 +229,10 @@ void printInstruct(int index)
     printf("%d rd=%d, rs=%d, rt=%d, rm=%d, imm1=%d, imm2=%d\n", ins[0], ins[1], ins[2], ins[3], ins[4], ins[5], ins[6]);
 }
 
+
+void printRegisters() 
+{
+    printf("v0=%d, a0=%d, a1=%d, a2=%d, t0=%d, t1=%d, t2=%d, s0=%d, s1=%d, s2=%d, sp=%d, ra=%d\n",
+        registers[3], registers[4], registers[5], registers[6], registers[7], registers[8], registers[9],
+        registers[10], registers[11], registers[12], registers[14], registers[15]);
+}

@@ -17,11 +17,25 @@ int executeInstruction(int* registers, int* instruction, int* pc)
     int opCode;
     int rdVal, rsVal, rtVal, rmVal;
 
-    if(instruction[imm1Index] & 0x00000800)
-        registers[1] = instruction[imm1Index] | 0xFFFFF000;
+
+    if (instruction[imm1Index] & 0x00000800)
+    {
+        registers[1] = instruction[imm1Index] | 0xFFFFF000; //2's complement - handle negative
+    }
+    else
+    {
+        registers[1] = instruction[imm1Index];
+    }
 
     if (instruction[imm2Index] & 0x00000800)
+    {
+        registers[2] = instruction[imm2Index] | 0xFFFFF000; //2's complement - handle negative
+    }
+    else
+    {
         registers[2] = instruction[imm2Index];
+    }
+
 
     rdVal = registers[instruction[rdIndex]];
     rsVal = registers[instruction[rsIndex]];
@@ -34,7 +48,7 @@ int executeInstruction(int* registers, int* instruction, int* pc)
     {
         int sddf = 0;
     }
-    printInstruction(instruction);
+    //printInstruction(instruction);
     // execute arithmetic operation
     if (0 <= opCode && opCode <= 8)
     {
@@ -167,14 +181,16 @@ int execBranch(int opCode, int rsVal, int rtVal)
 
 int execLw(int rsVal, int rtVal, int rmVal)
 {
-    int diskValue = readMemory(rsVal + rtVal);
+    int address = (rsVal + rtVal) & 0xFFF;
+    int diskValue = readMemory(address);
     return diskValue + rmVal;
 }
 
 void execSw(int rdVal, int rsVal, int rtVal, int rmVal)
 {
     int newVal = rdVal + rmVal;
-    writeMemory(rsVal + rtVal, newVal);
+    int address = (rsVal + rtVal) & 0xFFF;
+    writeMemory(address, newVal);
 }
 
 
