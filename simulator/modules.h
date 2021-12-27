@@ -18,10 +18,15 @@ void exitMemory();
 
 
 void initDisk(diskin, diskout);
-int readDisk();
-void writeDisk(int address, int value);
+void diskUpdate();
+int readDisk(int address);
+int writeDisk(int address, int value);
+void executeDisk(int actionType);
+void readSector();
+void writeSector();
 void exitDisk();
 int findDiskLastIndex();
+int hasinterrupt1();
 
 
 
@@ -37,6 +42,8 @@ int readClock(int address);
 int writeClock(int address, int value);
 void exitClock();
 int updateClock();
+int hasinterrupt0();
+unsigned long getClockCycles();
 
 
 

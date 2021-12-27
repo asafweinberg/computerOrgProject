@@ -9,17 +9,18 @@ static int* disk[sectorsNum];
 static int diskTotalSize = sectorsNum*sectorSize;
 static char* diskOutAddress;
 
-static int hasInterrupt1;
+static int interrupt1;
 static int diskcmd; // 0 - no command, 1 - read sector, 2 - write to sector
 static int disksector; //sector number, starting from 0
 static int diskbuffer; // Memory address of a buffer containing the sector being read or written
 static int diskstatus; // 0 - free to receive new command, 1 - busy handling read/write command
 
-static unsigned long cycles; //TODO: check what's the right value of it
+static unsigned long lastClockStamp; //is updated every time diskstatus goes to 1
+static unsigned long currentClock;
 
 
 void initDisk(char* diskin, char* diskout) {
-    char line[MAX_LINE_LEN+1]; //TODO: check exactly how many
+    char line[MAX_LINE_LEN+1];
     int i;
     int counter = 0;
     char* ptr;
@@ -52,7 +53,17 @@ void initDisk(char* diskin, char* diskout) {
     diskOutAddress = diskout;
 }
 
-int readClock(int address)
+void diskUpdate() {
+    currentClock = getClockCycles();
+    if (currentClock==lastClockStamp+1024) {
+        executeDisk(diskcmd);
+    }
+    diskstatus = 0; //free to get more instructions
+    diskcmd = 0;
+    //TODO: irqstatus1 needs to be set to 1
+}
+
+int readDisk(int address)
 {
     switch (address)
     {
@@ -70,7 +81,7 @@ int readClock(int address)
         break;
     
     default:
-        printf("readClock got a wrong io register number: %d", address);
+        printf("readDisk got a wrong io register number: %d", address);
         break;
     }
     return -1;
@@ -82,7 +93,13 @@ int writeDisk(int address, int value)
     switch (address)
     {
     case IO_DISK_CMD:
-        executeDisk(value);
+        if (!diskstatus) {
+            diskcmd = value;
+            if (address!=0) {
+                diskstatus = 1;
+                lastClockStamp = getClockCycles();
+            }
+        }
         break;
     case IO_DISK_SECTOR:
         if (!diskstatus) {
@@ -98,72 +115,48 @@ int writeDisk(int address, int value)
         break;
     
     default:
-        printf("writeClock got a wrong io register number: %d", address);
+        printf("writeDisk got a wrong io register number: %d", address);
         return -1;
         break;
     }
     return 1;
 }
 
-int executeDisk(int actionType) {
+void executeDisk(int actionType) {
     switch(actionType)
     {
         case 0:
-            diskcmd = 0; //TODO: when does it happen?
-            return 0;
+            return 0; //TODO: check what to to here
             break;
         case 1:
-            diskcmd = 1;
-            return readDisk(sectorId, bufferNum, bufferNum);
+            readDisk();
             break;
         case 2:
-            diskcmd = 2;
-            return writeDisk(sectorId, bufferNum);
+            writeDisk();
+            break;
     }
 }
 
-int readSector(int sectorId, int bufferNum) {
+void readSector() {
     int i;
-    int clock;
-    if (!diskstatus) {//means that disk is available
-        clock = readClock(IO_CLKS);
-        disksector = sectorId;
-        diskbuffer = bufferNum;
-        diskcmd = 1;
-        //now execute
-        for (i=0;i<sectorSize;i++) {
-            if (bufferNum+i==memorySize) {
-                break;
-            }
-            writeMemory(bufferNum+i, disk[sectorId][i]);
+    for (i=0;i<sectorSize;i++) {
+        if (diskbuffer+i==memorySize) {
+            break;
         }
-        
+        writeMemory(diskbuffer+i, disk[disksector][i]);
     }
-
 }
 
-int writeSector(int sectorId, int bufferNum) {
+void writeSector() {
     int i;
-    int clock;
-    if (!diskstatus) {//means that disk is available
-        clock = readClock(IO_CLKS);
-        disksector = sectorId;
-        diskbuffer = bufferNum;
-        diskcmd = 1;
-        //now execute
-        for (i=0;i<sectorSize;i++) {
-            if (bufferNum+i==memorySize) {
-                break;
-            }
-            disk[sectorId][i] = readMemory(bufferNum+i);
+    for (i=0;i<sectorSize;i++) {
+        if (diskbuffer+i==memorySize) {
+            break;
         }
-        
+        disk[disksector][i] = readMemory(diskbuffer+i);
     }
-
-int readDisk() 
-{
-    return 1;
 }
+
 
 void exitDisk() 
 {
@@ -187,9 +180,14 @@ int findDiskLastIndex()
     int lastIndex = 0;
     int i;
     for (i = 0; i < diskTotalSize; i++) {
-        if (disk[i / sectorSize][i % sectorSize]!=0) {
+        if (disk[i/sectorSize][i%sectorSize]!=0) {
             lastIndex = i;
         }
     }
     return lastIndex;
+}
+
+int hasinterrupt1()
+{
+    return interrupt1;
 }
