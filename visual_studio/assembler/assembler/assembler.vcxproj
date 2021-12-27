@@ -141,6 +141,9 @@
   <ItemGroup>
     <ClCompile Include="assembler.c" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\scripts\binom.asm" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

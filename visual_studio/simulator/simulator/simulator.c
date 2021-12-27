@@ -31,9 +31,9 @@ int main(int argc, char* argv[])
         }
     }
 
-    exitSimulator();
+    //exitSimulator(); // check if relevant
 
-    printInstructions();
+    //printInstructions();
 }
 
 
@@ -70,6 +70,7 @@ void initInstructions(char* fileName)
 
     while (fgets(&line, lineLength, fp) != -1)
     {
+        // TODO save original instruction in instructions->(char**)original
         addInstruction(tempInstructions, line, instructions->length);
         (instructions->length)++;
     }
@@ -150,19 +151,25 @@ int initialization(int argc, char* argv[])
     // }
     if (debug)
     {
-        imemin = "imemin.txt";
+        imemin = argv[1];
+        regout = "";
+        trace = "";
+        hwregtrace = "";
     }
     else
     {
-        imemin = argv[1];
+        regout = "";
+        trace = "";
+        hwregtrace = "";
     }
+    imemin = argv[1];
     dmemin = argv[2];
     diskin = argv[3];
     irq2in = argv[4];
     dmemout = argv[5];
-    regout = argv[6];
-    trace = argv[7];
-    hwregtrace = argv[8];
+    //regout = argv[6];
+    //trace = argv[7];
+    //hwregtrace = argv[8];
     cycles = argv[9];
     leds = argv[10];
     display7seg = argv[11];
@@ -171,13 +178,13 @@ int initialization(int argc, char* argv[])
     monitorYuv = argv[14];
 
     initSimulator(imemin, regout, trace, hwregtrace); //TODO: check who's handling hwregtrace file
-    initMemory(dmemin, dmemout);
-    initDisk(diskin, diskout);
-    // initinterrupts(irq2in);
-    initClock(cycles);
-    initLeds(leds);
-    initDisplay(display7seg);
-    initMonitor(monitor, monitorYuv);
+    //initMemory(dmemin, dmemout);
+    //initDisk(diskin, diskout);
+    //// initinterrupts(irq2in);
+    //initClock(cycles);
+    //initLeds(leds);
+    //initDisplay(display7seg);
+    //initMonitor(monitor, monitorYuv);
 
     return true; //TODO: check return value when error
 }
