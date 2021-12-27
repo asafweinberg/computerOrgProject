@@ -1,4 +1,4 @@
-#include <modules.h>
+#include "modules.h"
 
 #define memorySize 4096
 #define MAX_LINE_LEN  500
@@ -21,7 +21,7 @@ static unsigned long cycles; //TODO: check what's the right value of it
 void initDisk(char* diskin, char* diskout) {
     char line[MAX_LINE_LEN+1]; //TODO: check exactly how many
     int i;
-    int counter;
+    int counter = 0;
     char* ptr;
     //init hardware registers
     diskcmd = 0;
@@ -36,14 +36,15 @@ void initDisk(char* diskin, char* diskout) {
             exit(1);
         }
     }
-    FILE* diskFile =fopen(diskin,"r");
+    FILE* diskFile = fopen(diskin,"r");
     if (!diskFile) {
         printf("error in initDisk in reading diskin: %s\n", diskin);
         exit(1);
     }
-    while(fgets(line, MAX_LINE_LEN+1, diskFile)) {
-        int decVal = (int) strtol(line,ptr,16);
-        disk[counter/sectorSize][counter%sectorSize] = decVal; //counter/512 should be division by wholes
+    while(fgets(line, MAX_LINE_LEN + 1, diskFile)) 
+    {
+        int decVal = (int) strtol(line, &ptr, 16);
+        disk[(int)(counter/sectorSize)][(int)(counter % sectorSize)] = decVal; //counter/512 should be division by wholes
         counter++;
     }
     // no need to fill the rest because of calloc
@@ -159,9 +160,13 @@ int writeSector(int sectorId, int bufferNum) {
         
     }
 
+int readDisk() 
+{
+    return 1;
 }
 
-void exitDisk() {
+void exitDisk() 
+{
     int lastIndex;
     int i;
     lastIndex = findDiskLastIndex(); //last index that doesn't equal 0
@@ -177,11 +182,12 @@ void exitDisk() {
     free(disk);
 }
 
-int findDiskLastIndex() {
-    int lastIndex;
+int findDiskLastIndex() 
+{
+    int lastIndex = 0;
     int i;
-    for (i=0;i<diskTotalSize;i++) {
-        if (disk[i/sectorSize][i%sectorSize]!=0) {
+    for (i = 0; i < diskTotalSize; i++) {
+        if (disk[i / sectorSize][i % sectorSize]!=0) {
             lastIndex = i;
         }
     }

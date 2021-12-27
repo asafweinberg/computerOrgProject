@@ -1,12 +1,12 @@
 #include "modules.h"
 
 int display;
-FILE *fpOutput;
+FILE* fpOutput;
 
 void initDisplay(char* outputFileName)
 {
     fpOutput = fopen(outputFileName, "w");
-    if(!fpOutput)
+    if (!fpOutput)
     {
         printf("error opening output file for leds with name: %s", outputFileName);
         exit(1);

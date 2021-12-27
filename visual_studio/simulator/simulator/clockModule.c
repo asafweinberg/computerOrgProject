@@ -3,7 +3,7 @@
 
 #define CLOCK_MAX 0xFFFFFFFF
 
-unsigned int timercurrent,timerMax, timerEnabled, interrupt0, clks;
+unsigned int timercurrent, timerMax, timerEnabled, interrupt0, clks;
 unsigned long clockCycles;
 char* outputFileName;
 
@@ -35,7 +35,7 @@ int readClock(int address)
     case IO_TIMER_MAX:
         return timerMax;
         break;
-    
+
     default:
         printf("readClock got a wrong io register number: %d", address);
         break;
@@ -55,7 +55,7 @@ int writeClock(int address, int value)
         break;
     case IO_TIMER_ENABLE:
         timerEnabled = value;
-        if(value != 0 && value !=1)
+        if (value != 0 && value != 1)
         {
             printf("error on write clock, needs to check how to approach to timerEnable not boolean, given value = %d", timerEnabled);
         }
@@ -63,7 +63,7 @@ int writeClock(int address, int value)
     case IO_TIMER_MAX:
         timerMax = value;
         break;
-    
+
     default:
         printf("writeClock got a wrong io register number: %d", address);
         return -1;
@@ -74,10 +74,10 @@ int writeClock(int address, int value)
 
 void exitClock()
 {
-    FILE *fp;
+    FILE* fp;
 
     fp = fopen(outputFileName, "w");
-    if(!fp)
+    if (!fp)
     {
         printf("error opening output file for clock with name: %s", outputFileName);
         return;
