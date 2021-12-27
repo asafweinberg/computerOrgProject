@@ -27,7 +27,7 @@ int executeInstruction(int* registers, int* instruction, int* pc)
     {
         if (instruction[rdIndex] == 0)
             return true;
-        
+
         registers[instruction[rdIndex]] = execArithmetic(opCode, rsVal, rtVal, rmVal);
         *pc = *pc + 1;
     }
@@ -43,42 +43,42 @@ int executeInstruction(int* registers, int* instruction, int* pc)
             *pc = *pc + 1;
         }
     }
-    else 
+    else
     {
         switch (instruction[0])
         {
-            case 15:
-                registers[instruction[rdIndex]] = *pc + 1;
-                *pc = rmVal && 0xFFF;
-                break;
-            case 16:
-                registers[instruction[rdIndex]] = execLw(rsVal, rtVal, rmVal); // TODO: implement on memory
-                *pc = *pc + 1;
-                break;
-            case 17:
-                execSw(rdVal, rsVal, rtVal, rmVal); // TODO: implement on memory
-                *pc = *pc + 1;
-                break;
-            case 18:
-                *pc = getIoRegister(7); // TODO: implement on IO module or add implementation here and send directly to modules?
-                break;
-            case 19:
-                registers[instruction[rdIndex]] = getIoRegister(rsVal + rtVal); // TODO: implement function 
-                *pc = *pc + 1;
-                break;
-            case 20:
-                setIoRegister(rsVal + rtVal, rmVal); // TODO: implement function 
-                *pc = *pc + 1;
-                break;
-            case 21:
-                return false;
-                break;
+        case 15:
+            registers[instruction[rdIndex]] = *pc + 1;
+            *pc = rmVal && 0xFFF;
+            break;
+        case 16:
+            registers[instruction[rdIndex]] = execLw(rsVal, rtVal, rmVal); // TODO: implement on memory
+            *pc = *pc + 1;
+            break;
+        case 17:
+            execSw(rdVal, rsVal, rtVal, rmVal); // TODO: implement on memory
+            *pc = *pc + 1;
+            break;
+        case 18:
+            *pc = getIoRegister(7); // TODO: implement on IO module or add implementation here and send directly to modules?
+            break;
+        case 19:
+            registers[instruction[rdIndex]] = getIoRegister(rsVal + rtVal); // TODO: implement function 
+            *pc = *pc + 1;
+            break;
+        case 20:
+            setIoRegister(rsVal + rtVal, rmVal); // TODO: implement function 
+            *pc = *pc + 1;
+            break;
+        case 21:
+            return false;
+            break;
 
-            default:
-                printf("error: opcode does not exists\n");
-                printf("on pc = %d, opcode = %d\n", *pc, opCode);
-                exit(1);
-                break;
+        default:
+            printf("error: opcode does not exists\n");
+            printf("on pc = %d, opcode = %d\n", *pc, opCode);
+            exit(1);
+            break;
         }
     }
     return true;
@@ -90,36 +90,36 @@ int execArithmetic(int opCode, int rsVal, int rtVal, int rmVal)
     int value;
     switch (opCode)
     {
-        case 0:
-            value = rsVal + rtVal + rmVal;
-            break;
-        case 1:
-            value = rsVal - rtVal - rmVal;
-            break;
-        case 2:
-            value = rsVal * rtVal + rmVal;
-            break;
-        case 3:
-            value = rsVal & rtVal & rmVal;
-            break;
-        case 4:
-            value = rsVal | rtVal | rmVal;
-            break;
-        case 5:
-            value = rsVal ^ rtVal ^ rmVal;
-            break;
-        case 6:
-            value = rsVal << rtVal;
-            break;
-        case 7:
-            value = (int)((unsigned int)rsVal >> rtVal);
-            break;
-        case 8:
-            value = rsVal >> rtVal;
-            break;
-        
-        default:
-            break;
+    case 0:
+        value = rsVal + rtVal + rmVal;
+        break;
+    case 1:
+        value = rsVal - rtVal - rmVal;
+        break;
+    case 2:
+        value = rsVal * rtVal + rmVal;
+        break;
+    case 3:
+        value = rsVal & rtVal & rmVal;
+        break;
+    case 4:
+        value = rsVal | rtVal | rmVal;
+        break;
+    case 5:
+        value = rsVal ^ rtVal ^ rmVal;
+        break;
+    case 6:
+        value = rsVal << rtVal;
+        break;
+    case 7:
+        value = (int)((unsigned int)rsVal >> rtVal);
+        break;
+    case 8:
+        value = rsVal >> rtVal;
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -127,40 +127,40 @@ int execBranch(int opCode, int rsVal, int rtVal)
 {
     switch (opCode)
     {
-        case 9:
-            return rsVal == rtVal;
-            break;
-        case 10:
-            return rsVal != rtVal;
-            break;
-        case 11:
-            return rsVal < rtVal;
-            break;
-        case 12:
-            return rsVal > rtVal;
-            break;
-        case 13:
-            return rsVal <= rtVal;
-            break;
-        case 14:
-            return rsVal >= rtVal;
-            break;
-        default:
-            printf("error in execBranch");
-            exit(1);
-            break;
+    case 9:
+        return rsVal == rtVal;
+        break;
+    case 10:
+        return rsVal != rtVal;
+        break;
+    case 11:
+        return rsVal < rtVal;
+        break;
+    case 12:
+        return rsVal > rtVal;
+        break;
+    case 13:
+        return rsVal <= rtVal;
+        break;
+    case 14:
+        return rsVal >= rtVal;
+        break;
+    default:
+        printf("error in execBranch");
+        exit(1);
+        break;
     }
 }
 
 int execLw(int rsVal, int rtVal, int rmVal)
 {
-    int diskValue = readMemory(rsVal+rtVal);
+    int diskValue = readMemory(rsVal + rtVal);
     return diskValue + rmVal;
 }
 
 void execSw(int rdVal, int rsVal, int rtVal, int rmVal)
 {
-    int newVal = rdVal + rmVal; 
+    int newVal = rdVal + rmVal;
     writeMemory(rsVal + rtVal, newVal);
 }
 

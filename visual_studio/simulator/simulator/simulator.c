@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
 
     initialization(argc, argv);
 
-    while (pc < instructions -> length)
+    while (pc < instructions->length)
     {
         //writeTraceOutput(pc); // TODO
         clock = updateClock(); // TODO: check where to update the clock
@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
             exitSimulator();
         }
     }
-    
+
     exitSimulator();
 
     printInstructions();
@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
 
 void initSimulator(char* imemin, char* regout, char* trace, char* hwregtrace)
 {
-    instructions = (instructionArray*) calloc(1, sizeof(instructionArray));
+    instructions = (instructionArray*)calloc(1, sizeof(instructionArray));
     initInstructions(imemin);
 
     //TODO: open other 3 files for output
@@ -46,12 +46,12 @@ void initSimulator(char* imemin, char* regout, char* trace, char* hwregtrace)
 
 void initInstructions(char* fileName)
 {
-    FILE *fp;
+    FILE* fp;
     char* line;
     int lineLength = 14;
     int** tempInstructions;
     fp = fopen(fileName, "r");
-    
+
     if (!fp)
     {
         printf("error while open imemin file");
@@ -65,9 +65,9 @@ void initInstructions(char* fileName)
         exit(1);
     }
 
-    line = (char*)calloc(14,sizeof(char));
+    line = (char*)calloc(14, sizeof(char));
 
-    while (fgets(&line,  lineLength, fp) != -1)
+    while (fgets(&line, lineLength, fp) != -1)
     {
         addInstruction(tempInstructions, line, instructions->length);
         (instructions->length)++;
@@ -84,11 +84,11 @@ void initInstructions(char* fileName)
     {
         instructions->instructionArr[i] = tempInstructions[i];
     }
-    
+
     fclose(fp);
 }
 
-void addInstruction(int **arr, char *line, int index)
+void addInstruction(int** arr, char* line, int index)
 {
     int binaryIns[48], bit;
     long long int ins;
@@ -99,7 +99,7 @@ void addInstruction(int **arr, char *line, int index)
     {
         bit = ins & 1;
         ins = ins >> 1;
-        binaryIns[47-i] = bit;
+        binaryIns[47 - i] = bit;
     }
     int opcode = getIntFrombinary(binaryIns, 0, 7); //40-47
     int rd = getIntFrombinary(binaryIns, 8, 11); //36-39
@@ -109,7 +109,7 @@ void addInstruction(int **arr, char *line, int index)
     int imm1 = getIntFrombinary(binaryIns, 24, 35); //12-23
     int imm2 = getIntFrombinary(binaryIns, 36, 47); //0-11
 
-    arr[index] = (int*) calloc(INSTRUCTION_SIZE, sizeof(int));
+    arr[index] = (int*)calloc(INSTRUCTION_SIZE, sizeof(int));
     if (!arr[index])
     {
         printf("error allocating new instruction");
@@ -125,11 +125,11 @@ void addInstruction(int **arr, char *line, int index)
     arr[index][6] = imm2;
 }
 
-int getIntFrombinary(int *binaryIns, int start, int end)
+int getIntFrombinary(int* binaryIns, int start, int end)
 {
     int val = 0;
     int pow = 1;
-    for(int i = end; i >= start; i--)
+    for (int i = end; i >= start; i--)
     {
         val += binaryIns[i] * pow;
         pow *= 2;
@@ -140,7 +140,7 @@ int getIntFrombinary(int *binaryIns, int start, int end)
 
 int initialization(int argc, char* argv[])
 {
-    char *imemin, *dmemin, *diskin, *irq2in, *dmemout, *regout, *trace, *hwregtrace, *cycles, *leds, *display7seg, *diskout, *monitor, *monitorYuv;
+    char* imemin, * dmemin, * diskin, * irq2in, * dmemout, * regout, * trace, * hwregtrace, * cycles, * leds, * display7seg, * diskout, * monitor, * monitorYuv;
 
     // if (argc != 15)
     // {
@@ -168,7 +168,7 @@ int initialization(int argc, char* argv[])
     diskout = argv[12];
     monitor = argv[13];
     monitorYuv = argv[14];
-    
+
     initSimulator(imemin, regout, trace, hwregtrace); //TODO: check who's handling hwregtrace file
     initMemory(dmemin, dmemout);
     initDisk(diskin, diskout);
@@ -181,7 +181,7 @@ int initialization(int argc, char* argv[])
     return true; //TODO: check return value when error
 }
 
-void exitSimulator() 
+void exitSimulator()
 {
     exitClock();
     exitDisplay();
@@ -198,13 +198,13 @@ void printInstructions()
     {
         printInstruct(i);
     }
-    printf("instruction count = %d", instructions -> length);
-    
+    printf("instruction count = %d", instructions->length);
+
 }
 
 void printInstruct(int index)
 {
     int* ins = (instructions->instructionArr)[index];
-    printf("%d rd=%d, rs=%d, rt=%d, rm=%d, imm1=%d, imm2=%d\n", ins[0],ins[1],ins[2],ins[3],ins[4],ins[5],ins[6]);
+    printf("%d rd=%d, rs=%d, rt=%d, rm=%d, imm1=%d, imm2=%d\n", ins[0], ins[1], ins[2], ins[3], ins[4], ins[5], ins[6]);
 }
 
