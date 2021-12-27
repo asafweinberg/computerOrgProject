@@ -14,13 +14,14 @@ int main(int argc, char* argv[])
     pc = 0;
 
     initialization(argc, argv);
+    //printInstructions();
 
     while (pc < instructions->length)
     {
         //writeTraceOutput(pc); // TODO
         updateClock(); // TODO: check where to update the clock
         //updateDisk(); //TODO
-        //if (checkinterruption()) //TODO
+        //if (checkinterruption()) //TODO: save in flag. if the flag is true top checking for interrupts. if reti switch the flag to false.
         //{
         //    pc = startinterrupt(); //TODO
         //    // continue; // TODO: check when to start handling the interrupt
@@ -68,7 +69,7 @@ void initInstructions(char* fileName)
 
     line = (char*)calloc(14, sizeof(char));
 
-    while (fgets(&line, lineLength, fp) != -1)
+    while (fgets(line, lineLength, fp))
     {
         // TODO save original instruction in instructions->(char**)original
         addInstruction(tempInstructions, line, instructions->length);
@@ -178,7 +179,7 @@ int initialization(int argc, char* argv[])
     monitorYuv = argv[14];
 
     initSimulator(imemin, regout, trace, hwregtrace); //TODO: check who's handling hwregtrace file
-    //initMemory(dmemin, dmemout);
+    initMemory(dmemin, dmemout);
     //initDisk(diskin, diskout);
     //// initinterrupts(irq2in);
     //initClock(cycles);
