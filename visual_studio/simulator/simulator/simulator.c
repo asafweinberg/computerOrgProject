@@ -10,7 +10,7 @@ static instructionArray* instructions;
 
 int main(int argc, char* argv[])
 {
-    int pc, clock;
+    int pc;
     pc = 0;
 
     initialization(argc, argv);
@@ -18,7 +18,8 @@ int main(int argc, char* argv[])
     while (pc < instructions->length)
     {
         //writeTraceOutput(pc); // TODO
-        clock = updateClock(); // TODO: check where to update the clock
+        updateClock(); // TODO: check where to update the clock
+        //updateDisk(); //TODO
         //if (checkinterruption()) //TODO
         //{
         //    pc = startinterrupt(); //TODO
@@ -175,7 +176,7 @@ int initialization(int argc, char* argv[])
     // initinterrupts(irq2in);
     initClock(cycles);
     initLeds(leds);
-    initDisplay(display7seg); //TODO: check what is display
+    initDisplay(display7seg);
     initMonitor(monitor, monitorYuv);
 
     return true; //TODO: check return value when error
