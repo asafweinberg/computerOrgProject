@@ -8,6 +8,10 @@ int debug = true;
 static int registers[regSize];
 static instructionArray* instructions;
 
+char * regoutFile;
+char * traceFile;
+char * hwregtraceFile;
+
 int main(int argc, char* argv[])
 {
     int pc, clock;
@@ -42,6 +46,9 @@ void initSimulator(char* imemin, char* regout, char* trace, char* hwregtrace)
     initInstructions(imemin);
 
     //TODO: open other 3 files for output
+    regoutFile = regout;
+    traceFile = trace;
+    hwregtraceFile = hwregtrace;
 }
 
 void initInstructions(char* fileName)
@@ -189,6 +196,25 @@ void exitSimulator()
     exitMemory();
     exitMonitor();
     //TODO: exitDisk, exitInterrupts
+    regFileHandle();
+    traceFileHandle();
+}
+
+void regFileHandle()
+{
+    int i;
+    FILE* rgoutF = fopen(regoutFile,"w");
+
+    for(i=3 ; i< regSize ; i++) 
+		fprintf(rgoutF , "%08X\n" , registers[i]);
+
+    fclose(rgoutF);
+
+}
+
+void traceFileHandle()
+{
+
 }
 
 
