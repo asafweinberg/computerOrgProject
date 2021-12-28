@@ -1,12 +1,11 @@
 	lw $a0, $zero, $imm1, $zero, 0x100, 0
-	lw $a0, $zero, $imm1, $zero, 0x101, 0
-	beq $zero,$zero,$zero,$ra,0,0
+	lw $a1, $zero, $imm1, $zero, 0x101, 0
 	sw $v0, $zero, $imm1, $zero, 0x102, 0
 	add $sp, $zero, $imm1, $zero, 2048, 0
-    jal $ra,$zero,$zero,$imm2,0,FIB
+    jal $ra,$zero,$zero,$imm2,0,BIN
     halt $zero, $zero, $zero, $zero, 0, 0 
 
-FIB:
+BIN:
     add $sp,$sp,$zero,$imm1,-3,0
     sw $zero,$sp,$imm1,$ra,2,0
     sw $zero,$sp,$imm1,$s0,1,0
@@ -19,12 +18,12 @@ FIB:
     add $s1,$a1,$zero,$zero,0,0
     sub $a0,$a0,$imm1,$zero,1,0
     sub $a1,$a1,$imm1,$zero,1,0
-    jal $ra,$zero,$zero,$imm2,0,FIB
+    jal $ra,$zero,$zero,$imm2,0,BIN
 
     sub $a0,$s0,$imm1,$zero,1,0
     add $a1,$s1,$zero,$zero,0,0
     add $s0,$v0,$zero,$zero,0,0
-    jal $ra,$zero,$zero,$imm2,0,FIB
+    jal $ra,$zero,$zero,$imm2,0,BIN
 
     add $v0,$v0,$s0,$zero,0,0
 	beq $zero,$zero,$zero,$imm2,0,RETURN
@@ -38,3 +37,6 @@ RETURN:
     add $sp,$sp,$zero,$imm1,3,0
 
     beq $zero,$zero,$zero,$ra,0,0
+	
+	.word 0x100 1
+	.word 0x101 0
