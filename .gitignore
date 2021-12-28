@@ -59,3 +59,7 @@ dkms.conf
 visual_studio/simulator/x64/*
 visual_studio/simulator/simulator/x64/*
 visual_studio/simulator/.vs/*
+
+visual_studio/assembler/x64/*
+visual_studio/assembler/assembler/x64/*
+visual_studio/assembler/.vs/*

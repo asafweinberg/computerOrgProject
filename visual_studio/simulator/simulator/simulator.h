@@ -7,6 +7,10 @@ void addInstruction(int** arr, char* line, int index);
 int getIntFrombinary(int* binaryIns, int start, int end);
 void exitSimulator();
 
+void regFileHandle();
+void traceFileHandle();
+
+
 void printInstructions();
 void printInstruct(int index);
 

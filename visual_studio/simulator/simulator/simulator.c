@@ -8,18 +8,25 @@ int debug = true;
 static int registers[regSize];
 static instructionArray* instructions;
 
+char * regoutFile;
+char * traceFile;
+char * hwregtraceFile;
+
 int main(int argc, char* argv[])
 {
-    int pc, clock;
+    int pc;
     pc = 0;
 
     initialization(argc, argv);
+    //printInstructions();
 
     while (pc < instructions->length)
     {
+        printRegisters();
         //writeTraceOutput(pc); // TODO
-        clock = updateClock(); // TODO: check where to update the clock
-        //if (checkinterruption()) //TODO
+        updateClock(); // TODO: check where to update the clock
+        //updateDisk(); //TODO
+        //if (checkinterruption()) //TODO: save in flag. if the flag is true top checking for interrupts. if reti switch the flag to false.
         //{
         //    pc = startinterrupt(); //TODO
         //    // continue; // TODO: check when to start handling the interrupt
@@ -30,9 +37,9 @@ int main(int argc, char* argv[])
         }
     }
 
-    exitSimulator();
+    //exitSimulator(); // check if relevant
 
-    printInstructions();
+    //printInstructions();
 }
 
 
@@ -42,6 +49,9 @@ void initSimulator(char* imemin, char* regout, char* trace, char* hwregtrace)
     initInstructions(imemin);
 
     //TODO: open other 3 files for output
+    regoutFile = regout;
+    traceFile = trace;
+    hwregtraceFile = hwregtrace;
 }
 
 void initInstructions(char* fileName)
@@ -67,8 +77,9 @@ void initInstructions(char* fileName)
 
     line = (char*)calloc(14, sizeof(char));
 
-    while (fgets(&line, lineLength, fp) != -1)
+    while (fgets(line, lineLength, fp))
     {
+        // TODO save original instruction in instructions->(char**)original
         addInstruction(tempInstructions, line, instructions->length);
         (instructions->length)++;
     }
@@ -142,6 +153,11 @@ int initialization(int argc, char* argv[])
 {
     char* imemin, * dmemin, * diskin, * irq2in, * dmemout, * regout, * trace, * hwregtrace, * cycles, * leds, * display7seg, * diskout, * monitor, * monitorYuv;
 
+    for (int i = 0; i < regSize; i++)
+    {
+        registers[i] = 0;
+    }
+
     // if (argc != 15)
     // {
     //     printf("error: got %d arguments instead of 14", argc-1);
@@ -149,19 +165,25 @@ int initialization(int argc, char* argv[])
     // }
     if (debug)
     {
-        imemin = "imemin.txt";
+        imemin = argv[1];
+        regout = "";
+        trace = "";
+        hwregtrace = "";
     }
     else
     {
-        imemin = argv[1];
+        regout = "";
+        trace = "";
+        hwregtrace = "";
     }
+    imemin = argv[1];
     dmemin = argv[2];
     diskin = argv[3];
     irq2in = argv[4];
     dmemout = argv[5];
-    regout = argv[6];
-    trace = argv[7];
-    hwregtrace = argv[8];
+    //regout = argv[6];
+    //trace = argv[7];
+    //hwregtrace = argv[8];
     cycles = argv[9];
     leds = argv[10];
     display7seg = argv[11];
@@ -171,24 +193,43 @@ int initialization(int argc, char* argv[])
 
     initSimulator(imemin, regout, trace, hwregtrace); //TODO: check who's handling hwregtrace file
     initMemory(dmemin, dmemout);
-    initDisk(diskin, diskout);
-    // initinterrupts(irq2in);
-    initClock(cycles);
-    initLeds(leds);
-    initDisplay(display7seg); //TODO: check what is display
-    initMonitor(monitor, monitorYuv);
+    //initDisk(diskin, diskout);
+    //// initinterrupts(irq2in);
+    //initClock(cycles);
+    //initLeds(leds);
+    //initDisplay(display7seg);
+    //initMonitor(monitor, monitorYuv);
 
     return true; //TODO: check return value when error
 }
 
 void exitSimulator()
 {
-    exitClock();
+    /*exitClock();
     exitDisplay();
     exitLeds();
     exitMemory();
-    exitMonitor();
+    exitMonitor();*/
     //TODO: exitDisk, exitInterrupts
+    regFileHandle();
+    traceFileHandle();
+}
+
+void regFileHandle()
+{
+    int i;
+    FILE* rgoutF = fopen(regoutFile,"w");
+
+    for(i=3 ; i< regSize ; i++) 
+		fprintf(rgoutF , "%08X\n" , registers[i]);
+
+    fclose(rgoutF);
+
+}
+
+void traceFileHandle()
+{
+
 }
 
 
@@ -208,3 +249,10 @@ void printInstruct(int index)
     printf("%d rd=%d, rs=%d, rt=%d, rm=%d, imm1=%d, imm2=%d\n", ins[0], ins[1], ins[2], ins[3], ins[4], ins[5], ins[6]);
 }
 
+
+void printRegisters() 
+{
+    printf("v0=%d, a0=%d, a1=%d, a2=%d, t0=%d, t1=%d, t2=%d, s0=%d, s1=%d, s2=%d, sp=%d, ra=%d\n",
+        registers[3], registers[4], registers[5], registers[6], registers[7], registers[8], registers[9],
+        registers[10], registers[11], registers[12], registers[14], registers[15]);
+}

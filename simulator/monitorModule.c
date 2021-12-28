@@ -26,7 +26,9 @@ void initMonitor(char* monitor, char* monitorYuv)
     monitoraddr = 0;
     monitordata = 0;
     monitorcmd = 0;
-    
+    ouputTxt = monitor;
+    outputYuv = monitorYuv;
+        
 }
 
 
@@ -93,5 +95,26 @@ void writePixel(int value)
 
 void exitMonitor()
 {
-    //TODO !!!!!!
+    FILE* monitorFile = fopen(ouputTxt,"w");
+    FILE* monitorYuvFile = fopen(outputYuv,"w");
+    int i, j;
+    char * buffer [8];
+
+
+    for(i=0 ; i<MONITOR_LEN ; i++)
+    {
+        for(j=0 ; j<MONITOR_LEN ; j++ )
+        {
+            fprintf(monitorFile , "%X\n" , monitorBuffer[i][j]);
+            
+            itoa((int)(monitorBuffer[i][j]) , buffer, 2);
+            fprintf(monitorYuvFile , "%s\n" , buffer);
+
+        }
+    }
+
+    fclose(monitorFile);
+    fclose(monitorYuvFile);
+
+
 }
