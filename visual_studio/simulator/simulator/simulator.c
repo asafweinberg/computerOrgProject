@@ -19,11 +19,12 @@ int main(int argc, char* argv[])
 
     initialization(argc, argv);
     //printInstructions();
+    FILE* traceF = fopen(traceFile,"w");
 
     while (pc < instructions->length)
     {
         printRegisters();
-        //writeTraceOutput(pc); // TODO
+        writeTraceOutput(pc, traceF); // TODO
         updateClock(); // TODO: check where to update the clock
         //updateDisk(); //TODO
         //if (checkinterruption()) //TODO: save in flag. if the flag is true top checking for interrupts. if reti switch the flag to false.
@@ -34,6 +35,7 @@ int main(int argc, char* argv[])
         if (!executeInstruction(registers, instructions->instructionArr[pc], &pc))
         {
             exitSimulator();
+            fclose(traceF);
         }
     }
 
@@ -52,6 +54,8 @@ void initSimulator(char* imemin, char* regout, char* trace, char* hwregtrace)
     regoutFile = regout;
     traceFile = trace;
     hwregtraceFile = hwregtrace;
+
+
 }
 
 void initInstructions(char* fileName)
@@ -61,6 +65,9 @@ void initInstructions(char* fileName)
     int lineLength = 14;
     int** tempInstructions;
     fp = fopen(fileName, "r");
+    int origInstCount=0;
+
+    
 
     if (!fp)
     {
@@ -75,21 +82,36 @@ void initInstructions(char* fileName)
         exit(1);
     }
 
+    instructions-> originalInst = (char**)calloc(instructions->length, sizeof(char*));
+    if (!instructions->originalInst)
+    {
+        printf("error allocating memory original instructions in simulator init and cant recover");
+        exit(1);
+    }
+
     line = (char*)calloc(14, sizeof(char));
 
     while (fgets(line, lineLength, fp))
     {
         // TODO save original instruction in instructions->(char**)original
+        strcpy(instructions-> originalInst[origInstCount],line);
+        origInstCount++;    //TODO maybe change to instructions->length
+
         addInstruction(tempInstructions, line, instructions->length);
         (instructions->length)++;
     }
 
-    instructions->instructionArr = (int**)calloc(instructions->length, sizeof(int*));
+    instructions-> instructionArr = (int**)calloc(instructions->length, sizeof(int*));
+    
+
+
     if (!instructions->instructionArr)
     {
         printf("error allocating memory instructions in simulator init and cant recover");
         exit(1);
     }
+
+   
 
     for (int i = 0; i < instructions->length; i++)
     {
@@ -220,15 +242,27 @@ void regFileHandle()
     int i;
     FILE* rgoutF = fopen(regoutFile,"w");
 
-    for(i=3 ; i< regSize ; i++) 
+    for(i=3 ; i< regSize ; i++)
+    {
 		fprintf(rgoutF , "%08X\n" , registers[i]);
-
+    }
     fclose(rgoutF);
 
 }
 
-void traceFileHandle()
+void writeTraceOutput(int pc, FILE * traceF)
 {
+    int i;
+
+    fprintf(traceF , "%03X" , pc);
+    fprintf(traceF , "%s" , instructions->originalInst[pc]);
+
+    for(i = 0 ; i< regSize ; i++) 
+    {
+		fprintf(traceF , "%08X" , registers[i]); // TODO might need changes with negatives
+    }
+    fprintf(traceF , "\n");
+
 
 }
 

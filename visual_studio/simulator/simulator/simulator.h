@@ -8,7 +8,7 @@ int getIntFrombinary(int* binaryIns, int start, int end);
 void exitSimulator();
 
 void regFileHandle();
-void traceFileHandle();
+void writeTraceOutput();
 
 
 void printInstructions();
