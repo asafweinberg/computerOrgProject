@@ -129,12 +129,15 @@ void executeDisk(int actionType) {
             return 0; //TODO: check what to to here
             break;
         case 1:
-            readDisk();
+            readSector();
+            interrupt1 = 1;
             break;
         case 2:
-            writeDisk();
+            writeSector();
+            interrupt1 = 1;
             break;
     }
+    //TODO: ask whether call to writeInterrupts could be made here instead of inside cases
 }
 
 void readSector() {
@@ -185,6 +188,11 @@ int findDiskLastIndex()
         }
     }
     return lastIndex;
+}
+
+void turnOffInterrupt1()
+{
+    interrupt1 = 0;
 }
 
 int hasinterrupt1()

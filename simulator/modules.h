@@ -27,11 +27,15 @@ void writeSector();
 void exitDisk();
 int findDiskLastIndex();
 int hasinterrupt1();
+void turnOffInterrupt1();
 
 
 
 
-void initinterrupts(irq2in);
+void initinterrupts(char* irq2in);
+int readInterrupts(int address);
+int writeInterrupts(int address, int value);
+int checkinterruption();
 //int readinterrupts(int address);
 
 
