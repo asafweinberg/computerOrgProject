@@ -26,7 +26,6 @@ void initMonitor(char* monitor, char* monitorYuv)
     monitoraddr = 0;
     monitordata = 0;
     monitorcmd = 0;
-
 }
 
 

@@ -7,13 +7,35 @@
 #define imm1Index 5
 #define imm2Index 6
 
+//TODO: DELETE
+void printInstruction(int* instruction);
+
+
+
 int executeInstruction(int* registers, int* instruction, int* pc)
 {
     int opCode;
     int rdVal, rsVal, rtVal, rmVal;
 
-    registers[1] = instruction[imm1Index];
-    registers[2] = instruction[imm2Index];
+
+    if (instruction[imm1Index] & 0x00000800)
+    {
+        registers[1] = instruction[imm1Index] | 0xFFFFF000; //2's complement - handle negative
+    }
+    else
+    {
+        registers[1] = instruction[imm1Index];
+    }
+
+    if (instruction[imm2Index] & 0x00000800)
+    {
+        registers[2] = instruction[imm2Index] | 0xFFFFF000; //2's complement - handle negative
+    }
+    else
+    {
+        registers[2] = instruction[imm2Index];
+    }
+
 
     rdVal = registers[instruction[rdIndex]];
     rsVal = registers[instruction[rsIndex]];
@@ -21,7 +43,12 @@ int executeInstruction(int* registers, int* instruction, int* pc)
     rmVal = registers[instruction[rmIndex]];
 
     opCode = instruction[0];
-
+    //TODO: delete
+    if (opCode == 0)
+    {
+        int sddf = 0;
+    }
+    //printInstruction(instruction);
     // execute arithmetic operation
     if (0 <= opCode && opCode <= 8)
     {
@@ -49,7 +76,7 @@ int executeInstruction(int* registers, int* instruction, int* pc)
         {
         case 15:
             registers[instruction[rdIndex]] = *pc + 1;
-            *pc = rmVal && 0xFFF;
+            *pc = rmVal & 0xFFF;
             break;
         case 16:
             registers[instruction[rdIndex]] = execLw(rsVal, rtVal, rmVal); // TODO: implement on memory
@@ -60,7 +87,7 @@ int executeInstruction(int* registers, int* instruction, int* pc)
             *pc = *pc + 1;
             break;
         case 18:
-            *pc = getIoRegister(7); // TODO: implement on IO module or add implementation here and send directly to modules?
+            *pc = getIoRegister(IO_IRQ_RETURN); // TODO: implement on IO module or add implementation here and send directly to modules?
             break;
         case 19:
             registers[instruction[rdIndex]] = getIoRegister(rsVal + rtVal); // TODO: implement function 
@@ -154,14 +181,16 @@ int execBranch(int opCode, int rsVal, int rtVal)
 
 int execLw(int rsVal, int rtVal, int rmVal)
 {
-    int diskValue = readMemory(rsVal + rtVal);
+    int address = (rsVal + rtVal) & 0xFFF;
+    int diskValue = readMemory(address);
     return diskValue + rmVal;
 }
 
 void execSw(int rdVal, int rsVal, int rtVal, int rmVal)
 {
     int newVal = rdVal + rmVal;
-    writeMemory(rsVal + rtVal, newVal);
+    int address = (rsVal + rtVal) & 0xFFF;
+    writeMemory(address, newVal);
 }
 
 
@@ -260,4 +289,10 @@ int setIoRegister(int address, int value)
         exit(1);
         break;
     }
+}
+
+void printInstruction(int* instruction)
+{
+    int* ins = instruction;
+    printf("%d rd=%d, rs=%d, rt=%d, rm=%d, imm1=%d, imm2=%d\n", ins[0], ins[1], ins[2], ins[3], ins[4], ins[5], ins[6]);
 }
