@@ -125,3 +125,6 @@ int hasinterrupt0()
     return interrupt0;
 }
 
+unsigned long getClockCycles() {
+    return clockCycles;
+}
