@@ -12,19 +12,24 @@ char * regoutFile;
 char * traceFile;
 char * hwregtraceFile;
 
+char* IORegistersName[] = {"irq0enable", "irq1enable", "irq2enable", "irq0status", "irq1status", "irq2status", "irqhandler", "irqreturn", "clks", "leds", "display7seg", "timerenable", "timercurrent", "timermax", "diskcmd","disksector", "diskbuffer", "diskstatus", "reserved", "monitoraddr", "monitordata", "monitorcmd"}; 
+
 int main(int argc, char* argv[])
 {
-    int pc;
+    int pc, clock;
     pc = 0;
 
     initialization(argc, argv);
     //printInstructions();
     FILE* traceF = fopen(traceFile,"w");
+    FILE* hwtraceF = fopen(hwregtraceFile,"w");
 
     while (pc < instructions->length)
     {
         printRegisters();
-        writeTraceOutput(pc, traceF); // TODO
+        writeTraceOutput(pc, traceF); 
+        hwTraceHandle(pc, hwtraceF, clock); //TODO !!! ADD CLOCK
+
         updateClock(); // TODO: check where to update the clock
         //updateDisk(); //TODO
         //if (checkinterruption()) //TODO: save in flag. if the flag is true top checking for interrupts. if reti switch the flag to false.
@@ -36,6 +41,7 @@ int main(int argc, char* argv[])
         {
             exitSimulator();
             fclose(traceF);
+            fclose(hwtraceF);            
         }
     }
 
@@ -234,7 +240,7 @@ void exitSimulator()
     exitMonitor();*/
     //TODO: exitDisk, exitInterrupts
     regFileHandle();
-    traceFileHandle();
+    // traceFileHandle();
 }
 
 void regFileHandle()
@@ -250,19 +256,53 @@ void regFileHandle()
 
 }
 
+void hwTraceHandle(int pc, FILE *hwtraceF, int clock)
+{
+    int instT;
+    instT = instType(pc);
+    if(instT == 19 || instT == 20) //zero if not in or out
+    {
+        writeHwtraceOutput(hwtraceF, clock, instT, pc); 
+    }
+}
+
+int instType(int pc)
+{
+    return instructions->instructionArr[pc][0];
+}
+
+void writeHwtraceOutput(FILE * hwF, int clock, int instT, int pc)
+{
+	int regNum;
+
+    fprintf(hwF , "%d " , clock);
+    if(instT == 19) //in == READ
+    {
+	    fprintf(hwF , "READ ");
+    }
+
+    else
+    {
+	    fprintf(hwF , "WRITE ");
+    }
+    regNum = (instructions->instructionArr[pc][2]) + (instructions->instructionArr[pc][3]);
+	fprintf(hwF , "s ", regNum);
+    //TODO!! add the last parameter - data
+
+}
+
 void writeTraceOutput(int pc, FILE * traceF)
 {
     int i;
 
-    fprintf(traceF , "%03X" , pc);
-    fprintf(traceF , "%s" , instructions->originalInst[pc]);
+    fprintf(traceF , "%03X " , pc);
+    fprintf(traceF , "%s " , instructions->originalInst[pc]);
 
-    for(i = 0 ; i< regSize ; i++) 
+    for(i = 0 ; i< regSize-1 ; i++) 
     {
-		fprintf(traceF , "%08X" , registers[i]); // TODO might need changes with negatives
+		fprintf(traceF , "%08X " , registers[i]); // TODO might need changes with negatives
     }
-    fprintf(traceF , "\n");
-
+	fprintf(traceF , "%08X\n" , registers[i]); // TODO might need changes with negatives
 
 }
 

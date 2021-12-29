@@ -8,6 +8,9 @@ int getIntFrombinary(int* binaryIns, int start, int end);
 void exitSimulator();
 
 void regFileHandle();
+void hwTraceHandle(int pc, FILE *hwtraceF, int clock);
+int instType(int pc);
+void writeHwtraceOutput(FILE * hwF, int clock, int instT, int pc);
 void writeTraceOutput();
 
 
