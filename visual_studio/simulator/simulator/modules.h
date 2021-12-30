@@ -17,17 +17,25 @@ void writeMemory(int address, int value);
 void exitMemory();
 
 
-void initDisk(char* diskin, char* diskout);
-int readDisk();
-void writeDisk(int address, int value);
+void initDisk(diskin, diskout);
+void diskUpdate();
+int readDisk(int address);
+int writeDisk(int address, int value);
+void executeDisk(int actionType);
+void readSector();
+void writeSector();
 void exitDisk();
 int findDiskLastIndex();
+int hasinterrupt1();
+void turnOffInterrupt1();
 
 
 
 
-//void initinterrupts(char* irq2in);
-//int readinterrupts(int address);
+void initinterrupts(char* irq2in);
+int readInterrupts(int address);
+int writeInterrupts(int address, int value);
+int checkinterruption();
 
 
 
@@ -37,7 +45,8 @@ int readClock(int address);
 int writeClock(int address, int value);
 void exitClock();
 int updateClock();
-
+int hasinterrupt0();
+unsigned long getClockCycles();
 
 
 void initLeds(char* outputFileName);
