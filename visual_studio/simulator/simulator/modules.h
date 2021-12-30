@@ -1,7 +1,7 @@
 #include "base.h"
 
 
-int executeInstruction(int* registers, int* instruction, int* pc);
+int executeInstruction(int* registers, int* instruction, int* pc, FILE* hwtraceF, int* handlingInterupt);
 int execArithmetic(int opCode, int rsVal, int rtVal, int rmVal);
 int execBranch(int opCode, int rsVal, int rtVal);
 int execLw(int rsVal, int rtVal, int rmVal);

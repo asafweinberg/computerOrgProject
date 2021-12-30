@@ -35,6 +35,7 @@ int writeLeds(int address, int value)
     {
         leds = value;
         fprintf(fpOutput, "%u %08X\n", clock, leds);
+        return leds;
     }
     else
     {
