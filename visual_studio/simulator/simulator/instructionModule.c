@@ -7,12 +7,17 @@
 #define imm1Index 5
 #define imm2Index 6
 
+char* IORegistersName[] = {"irq0enable", "irq1enable", "irq2enable", "irq0status", "irq1status", "irq2status", "irqhandler", "irqreturn", "clks", "leds", "display7seg", "timerenable", "timercurrent", "timermax", "diskcmd","disksector", "diskbuffer", "diskstatus", "reserved", "monitoraddr", "monitordata", "monitorcmd"}; 
+
+
 //TODO: DELETE
 void printInstruction(int* instruction);
 
+void writeHwtraceOutput(FILE * hwF, int instT, int regNum, int data); //TODO add to header file?
 
 
-int executeInstruction(int* registers, int* instruction, int* pc)
+
+int executeInstruction(int* registers, int* instruction, int* pc, FILE * hwtraceF)
 {
     int opCode;
     int rdVal, rsVal, rtVal, rmVal;
@@ -92,10 +97,12 @@ int executeInstruction(int* registers, int* instruction, int* pc)
         case 19:
             registers[instruction[rdIndex]] = getIoRegister(rsVal + rtVal); // TODO: implement function 
             *pc = *pc + 1;
+            writeHwtraceOutput(hwtraceF, 19, rsVal + rtVal, registers[instruction[rdIndex]]);
             break;
         case 20:
             setIoRegister(rsVal + rtVal, rmVal); // TODO: implement function 
             *pc = *pc + 1;
+            writeHwtraceOutput(hwtraceF, 20, rsVal + rtVal, rmVal);
             break;
         case 21:
             return false;
@@ -109,6 +116,23 @@ int executeInstruction(int* registers, int* instruction, int* pc)
         }
     }
     return true;
+}
+
+void writeHwtraceOutput(FILE * hwF, int instT, int regNum, int data)
+{
+    int clock = readClock(IO_CLKS);
+    fprintf(hwF , "%d " , clock);
+    if(instT == 19) //in == READ
+    {
+	    fprintf(hwF , "READ ");
+    }
+
+    else
+    {
+	    fprintf(hwF , "WRITE ");
+    }
+    fprintf(hwF , "%d " , IORegistersName[regNum]);
+    fprintf(hwF , "%08X\n" , data); //TODO CHECK IT
 }
 
 

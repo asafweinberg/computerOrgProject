@@ -1,7 +1,6 @@
 
 #include "simulator.h"
-#include <stdio.h>
-#include <stdlib.h>
+
 
 int debug = true;
 
@@ -12,11 +11,9 @@ char * regoutFile;
 char * traceFile;
 char * hwregtraceFile;
 
-char* IORegistersName[] = {"irq0enable", "irq1enable", "irq2enable", "irq0status", "irq1status", "irq2status", "irqhandler", "irqreturn", "clks", "leds", "display7seg", "timerenable", "timercurrent", "timermax", "diskcmd","disksector", "diskbuffer", "diskstatus", "reserved", "monitoraddr", "monitordata", "monitorcmd"}; 
-
 int main(int argc, char* argv[])
 {
-    int pc, clock;
+    int pc, clock=0;
     pc = 0;
 
     initialization(argc, argv);
@@ -26,23 +23,23 @@ int main(int argc, char* argv[])
 
     while (pc < instructions->length)
     {
-        printRegisters();
+        // printRegisters();
         writeTraceOutput(pc, traceF); 
-        hwTraceHandle(pc, hwtraceF, clock); //TODO !!! ADD CLOCK
 
-        updateClock(); // TODO: check where to update the clock
         //updateDisk(); //TODO
         //if (checkinterruption()) //TODO: save in flag. if the flag is true top checking for interrupts. if reti switch the flag to false.
         //{
         //    pc = startinterrupt(); //TODO
         //    // continue; // TODO: check when to start handling the interrupt
         //} 
-        if (!executeInstruction(registers, instructions->instructionArr[pc], &pc))
+        if (!executeInstruction(registers, instructions->instructionArr[pc], &pc, hwtraceF))
         {
             exitSimulator();
             fclose(traceF);
             fclose(hwtraceF);            
         }
+        
+        updateClock(); // TODO: check where to update the clock
     }
 
     //exitSimulator(); // check if relevant
@@ -70,6 +67,7 @@ void initInstructions(char* fileName)
     char* line;
     int lineLength = 14;
     int** tempInstructions;
+    char ** tempOrigInstructions;
     fp = fopen(fileName, "r");
     int origInstCount=0;
 
@@ -88,20 +86,24 @@ void initInstructions(char* fileName)
         exit(1);
     }
 
-    instructions-> originalInst = (char**)calloc(instructions->length, sizeof(char*));
-    if (!instructions->originalInst)
+    tempOrigInstructions = (char**)calloc(4096, sizeof(char*));
+
+    if (!tempOrigInstructions)
     {
-        printf("error allocating memory original instructions in simulator init and cant recover");
+        printf("error allocating memory in simulator init and cant recover");
         exit(1);
     }
 
     line = (char*)calloc(14, sizeof(char));
+    if (!line)
+    {
+        printf("error allocating line");
+        exit(1);
+    }
 
     while (fgets(line, lineLength, fp))
     {
-        // TODO save original instruction in instructions->(char**)original
-        strcpy(instructions-> originalInst[origInstCount],line);
-        origInstCount++;    //TODO maybe change to instructions->length
+        strcpy(tempOrigInstructions[instructions->length] , line);
 
         addInstruction(tempInstructions, line, instructions->length);
         (instructions->length)++;
@@ -110,8 +112,14 @@ void initInstructions(char* fileName)
     instructions-> instructionArr = (int**)calloc(instructions->length, sizeof(int*));
     
 
-
     if (!instructions->instructionArr)
+    {
+        printf("error allocating memory instructions in simulator init and cant recover");
+        exit(1);
+    }
+    instructions-> originalInst = (char**)calloc(instructions->length, sizeof(char*));
+    
+    if (!instructions->originalInst)
     {
         printf("error allocating memory instructions in simulator init and cant recover");
         exit(1);
@@ -122,6 +130,7 @@ void initInstructions(char* fileName)
     for (int i = 0; i < instructions->length; i++)
     {
         instructions->instructionArr[i] = tempInstructions[i];
+        instructions->originalInst[i] = tempOrigInstructions[i];
     }
 
     fclose(fp);
@@ -219,7 +228,7 @@ int initialization(int argc, char* argv[])
     monitor = argv[13];
     monitorYuv = argv[14];
 
-    initSimulator(imemin, regout, trace, hwregtrace); //TODO: check who's handling hwregtrace file
+    initSimulator(imemin, regout, trace, hwregtrace); 
     initMemory(dmemin, dmemout);
     //initDisk(diskin, diskout);
     //// initinterrupts(irq2in);
@@ -256,40 +265,6 @@ void regFileHandle()
 
 }
 
-void hwTraceHandle(int pc, FILE *hwtraceF, int clock)
-{
-    int instT;
-    instT = instType(pc);
-    if(instT == 19 || instT == 20) //zero if not in or out
-    {
-        writeHwtraceOutput(hwtraceF, clock, instT, pc); 
-    }
-}
-
-int instType(int pc)
-{
-    return instructions->instructionArr[pc][0];
-}
-
-void writeHwtraceOutput(FILE * hwF, int clock, int instT, int pc)
-{
-	int regNum;
-
-    fprintf(hwF , "%d " , clock);
-    if(instT == 19) //in == READ
-    {
-	    fprintf(hwF , "READ ");
-    }
-
-    else
-    {
-	    fprintf(hwF , "WRITE ");
-    }
-    regNum = (instructions->instructionArr[pc][2]) + (instructions->instructionArr[pc][3]);
-	fprintf(hwF , "s ", regNum);
-    //TODO!! add the last parameter - data
-
-}
 
 void writeTraceOutput(int pc, FILE * traceF)
 {

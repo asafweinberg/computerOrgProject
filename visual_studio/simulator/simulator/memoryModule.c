@@ -1,7 +1,7 @@
 #define memorySize 4096
 #define MAX_LINE_LEN  500
 #define MEMORY_LINE_LEN 10
-#include <stdio.h>
+
 #include <math.h>
 #include "modules.h"
 

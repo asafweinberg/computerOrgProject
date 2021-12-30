@@ -1,5 +1,6 @@
 #include "modules.h"
 
+
 #define MONITOR_LEN 256
 
 unsigned short monitoraddr;
@@ -98,7 +99,7 @@ void exitMonitor()
     FILE* monitorFile = fopen(ouputTxt,"w");
     FILE* monitorYuvFile = fopen(outputYuv,"w");
     int i, j;
-    char * buffer [8];
+    char buffer [8];
 
 
     for(i=0 ; i<MONITOR_LEN ; i++)
@@ -107,7 +108,7 @@ void exitMonitor()
         {
             fprintf(monitorFile , "%X\n" , monitorBuffer[i][j]);
             
-            itoa((int)(monitorBuffer[i][j]) , buffer, 2);
+            _itoa((int)(monitorBuffer[i][j]) , buffer, 2);
             fprintf(monitorYuvFile , "%s\n" , buffer);
 
         }
