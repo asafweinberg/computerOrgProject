@@ -7,7 +7,7 @@
 #define imm1Index 5
 #define imm2Index 6
 
-char* IORegistersName[] = {"irq0enable", "irq1enable", "irq2enable", "irq0status", "irq1status", "irq2status", "irqhandler", "irqreturn", "clks", "leds", "display7seg", "timerenable", "timercurrent", "timermax", "diskcmd","disksector", "diskbuffer", "diskstatus", "reserved", "monitoraddr", "monitordata", "monitorcmd"}; 
+char* IORegistersName[] = {"irq0enable", "irq1enable", "irq2enable", "irq0status", "irq1status", "irq2status", "irqhandler", "irqreturn", "clks", "leds", "display7seg", "timerenable", "timercurrent", "timermax", "diskcmd","disksector", "diskbuffer", "diskstatus", "reserved","reserved", "monitoraddr", "monitordata", "monitorcmd"};
 
 
 //TODO: DELETE
@@ -131,7 +131,7 @@ void writeHwtraceOutput(FILE * hwF, int instT, int regNum, int data)
     {
 	    fprintf(hwF , "WRITE ");
     }
-    fprintf(hwF , "%d " , IORegistersName[regNum]);
+    fprintf(hwF , "%s " , IORegistersName[regNum]);
     fprintf(hwF , "%08X\n" , data); //TODO CHECK IT
 }
 
