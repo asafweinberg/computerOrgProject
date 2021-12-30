@@ -4,9 +4,9 @@
 #define MONITOR_LEN 256
 
 unsigned short monitoraddr;
-char monitordata;
+short monitordata;
 int monitorcmd;
-char* monitorBuffer[MONITOR_LEN];
+unsigned char monitorBuffer[MONITOR_LEN][MONITOR_LEN];
 char *ouputTxt, *outputYuv;
 
 
@@ -14,7 +14,7 @@ char *ouputTxt, *outputYuv;
 
 void initMonitor(char* monitor, char* monitorYuv)
 {
-    for (int i = 0; i < MONITOR_LEN; i++)
+   /* for (int i = 0; i < MONITOR_LEN; i++)
     {
         monitorBuffer[i] = (char*)calloc(MONITOR_LEN, sizeof(char));
         if(!monitorBuffer[i])
@@ -22,7 +22,7 @@ void initMonitor(char* monitor, char* monitorYuv)
             printf("error in initMonitor, unable to allocate memory");
             exit(1);
         }
-    }
+    }*/
 
     monitoraddr = 0;
     monitordata = 0;
@@ -65,7 +65,7 @@ int writeMonitor(int address, int value)
         writePixel(value);
         break;
     case IO_MONITOR_DATA:
-        monitordata = value; //TODO: convert to char
+        monitordata = (short)value; //TODO: convert to char
         break;
     default:
         printf("writeMonitor got a wrong io register number: %d", address);
@@ -99,20 +99,20 @@ void exitMonitor()
     FILE* monitorFile = fopen(ouputTxt,"w");
     FILE* monitorYuvFile = fopen(outputYuv,"w");
     int i, j;
-    char buffer [8];
+    //char buffer [8];
 
 
     for(i=0 ; i<MONITOR_LEN ; i++)
     {
         for(j=0 ; j<MONITOR_LEN ; j++ )
         {
-            fprintf(monitorFile , "%X\n" , monitorBuffer[i][j]);
+            fprintf(monitorFile , "%02X\n" , monitorBuffer[i][j]);
             
-            _itoa((int)(monitorBuffer[i][j]) , buffer, 2);
-            fprintf(monitorYuvFile , "%s\n" , buffer);
-
+            /*_itoa((int)(monitorBuffer[i][j]) , buffer, 2);
+            fprintf(monitorYuvFile , "%s\n" , buffer);*/
         }
     }
+    fwrite(monitorBuffer, 1, MONITOR_LEN * MONITOR_LEN, monitorYuvFile);
 
     fclose(monitorFile);
     fclose(monitorYuvFile);

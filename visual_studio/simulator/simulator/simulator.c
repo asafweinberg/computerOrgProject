@@ -2,7 +2,7 @@
 #include "simulator.h"
 
 
-int debug = true;
+int debug = false;
 
 static int registers[regSize];
 static instructionArray* instructions;
@@ -36,7 +36,8 @@ int main(int argc, char* argv[])
         {
             exitSimulator();
             fclose(traceF);
-            fclose(hwtraceF);            
+            fclose(hwtraceF);  
+            break;
         }
         
         updateClock(); // TODO: check where to update the clock
@@ -53,7 +54,6 @@ void initSimulator(char* imemin, char* regout, char* trace, char* hwregtrace)
     instructions = (instructionArray*)calloc(1, sizeof(instructionArray));
     initInstructions(imemin);
 
-    //TODO: open other 3 files for output
     regoutFile = regout;
     traceFile = trace;
     hwregtraceFile = hwregtrace;
@@ -67,7 +67,7 @@ void initInstructions(char* fileName)
     char* line;
     int lineLength = 14;
     int** tempInstructions;
-    char ** tempOrigInstructions;
+    char tempOrigInstructions[4096][14];
     fp = fopen(fileName, "r");
     int origInstCount=0;
 
@@ -86,13 +86,13 @@ void initInstructions(char* fileName)
         exit(1);
     }
 
-    tempOrigInstructions = (char**)calloc(4096, sizeof(char*));
+    //tempOrigInstructions = (char**)calloc(4096, sizeof(char*));
 
-    if (!tempOrigInstructions)
+    /*if (!tempOrigInstructions)
     {
         printf("error allocating memory in simulator init and cant recover");
         exit(1);
-    }
+    }*/
 
     line = (char*)calloc(14, sizeof(char));
     if (!line)
@@ -218,9 +218,9 @@ int initialization(int argc, char* argv[])
     diskin = argv[3];
     irq2in = argv[4];
     dmemout = argv[5];
-    //regout = argv[6];
-    //trace = argv[7];
-    //hwregtrace = argv[8];
+    regout = argv[6];
+    trace = argv[7];
+    hwregtrace = argv[8];
     cycles = argv[9];
     leds = argv[10];
     display7seg = argv[11];
@@ -235,7 +235,7 @@ int initialization(int argc, char* argv[])
     //initClock(cycles);
     //initLeds(leds);
     //initDisplay(display7seg);
-    //initMonitor(monitor, monitorYuv);
+    initMonitor(monitor, monitorYuv);
 
     return true; //TODO: check return value when error
 }
@@ -245,11 +245,10 @@ void exitSimulator()
     /*exitClock();
     exitDisplay();
     exitLeds();
-    exitMemory();
-    exitMonitor();*/
+    exitMemory();*/
+    exitMonitor();
     //TODO: exitDisk, exitInterrupts
     regFileHandle();
-    // traceFileHandle();
 }
 
 void regFileHandle()
