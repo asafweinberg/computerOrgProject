@@ -11,8 +11,8 @@
 typedef struct instruction_Array
 {
     int length;
-    int ** instructionArr;
-    char ** originalInst;
+    int** instructionArr;
+    char** originalInst;
 } instructionArray;
 
 
