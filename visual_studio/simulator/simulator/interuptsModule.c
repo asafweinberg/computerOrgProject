@@ -48,7 +48,7 @@ void initInterupts(char* irq2in) {
         printf("error in allocating memory\n");
         exit(1);
     }
-    while(fgets(line, MAX_LINE_LEN + 1, irq2File)) 
+    while(fgets(line, MAX_LINE_LEN + 1, irq2File))
     {
         irq2Listings = (long*)realloc(irq2Listings, (counter + 1) * sizeof(long));
         if (!irq2Listings) {
