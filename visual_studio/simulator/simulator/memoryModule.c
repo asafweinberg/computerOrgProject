@@ -79,7 +79,7 @@ void exitMemory() {
 }
 
 int findMemLastIndex() {
-    int lastIndex;
+    int lastIndex = 0;
     int i;
     for (i = 0; i < memorySize; i++) {
         if (memory[i] != 0) {

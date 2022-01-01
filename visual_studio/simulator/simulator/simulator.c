@@ -65,11 +65,12 @@ void initInstructions(char* fileName)
 {
     FILE* fp;
     char* line;
-    int lineLength = 14;
+    int lineLength = 14, i;
     int** tempInstructions;
-    char tempOrigInstructions[4096][14];
+    char** tempOrigInstructions;
+    //char tempOrigInstructions[4096][14];
     fp = fopen(fileName, "r");
-    int origInstCount=0;
+    //int origInstCount=0;
 
     
 
@@ -86,13 +87,23 @@ void initInstructions(char* fileName)
         exit(1);
     }
 
-    //tempOrigInstructions = (char**)calloc(4096, sizeof(char*));
+    tempOrigInstructions = (char**)calloc(4096, sizeof(char*));
 
-    /*if (!tempOrigInstructions)
+    if (!tempOrigInstructions)
     {
         printf("error allocating memory in simulator init and cant recover");
         exit(1);
-    }*/
+    }
+
+    for (i = 0; i < 4096; i++)
+    {
+        tempOrigInstructions[i] = (char*)calloc(14, sizeof(char));
+        if (!tempOrigInstructions[i])
+        {
+            printf("error allocating");
+            exit(1);
+        }
+    }
 
     line = (char*)calloc(14, sizeof(char));
     if (!line)
@@ -231,7 +242,7 @@ int initialization(int argc, char* argv[])
 
     initSimulator(imemin, regout, trace, hwregtrace); 
     initMemory(dmemin, dmemout);
-    //initDisk(diskin, diskout);
+    initDisk(diskin, diskout);
     //// initinterrupts(irq2in);
     initClock(cycles);
     //initLeds(leds);
@@ -249,6 +260,7 @@ void exitSimulator()
     exitMemory();
     exitMonitor();
     //TODO: exitDisk, exitInterrupts
+    exitDisk();
     regFileHandle();
 }
 
