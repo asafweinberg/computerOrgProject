@@ -16,13 +16,8 @@ void printInstruction(int* instruction);
 void writeHwtraceOutput(FILE * hwF, int instT, int regNum, int data); //TODO add to header file?
 
 
-
-int executeInstruction(int* registers, int* instruction, int* pc, FILE * hwtraceF, int* handlingInterupt)
+void setImmRegisters(int* registers, int* instruction)
 {
-    int opCode;
-    int rdVal, rsVal, rtVal, rmVal;
-
-
     if (instruction[imm1Index] & 0x00000800)
     {
         registers[1] = instruction[imm1Index] | 0xFFFFF000; //2's complement - handle negative
@@ -40,6 +35,14 @@ int executeInstruction(int* registers, int* instruction, int* pc, FILE * hwtrace
     {
         registers[2] = instruction[imm2Index];
     }
+}
+
+
+int executeInstruction(int* registers, int* instruction, int* pc, FILE * hwtraceF, int* handlingInterupt)
+{
+    int opCode;
+    int rdVal, rsVal, rtVal, rmVal;
+
 
 
     rdVal = registers[instruction[rdIndex]];
@@ -49,7 +52,7 @@ int executeInstruction(int* registers, int* instruction, int* pc, FILE * hwtrace
 
     opCode = instruction[0];
     //TODO: delete
-    if (opCode == 0)
+    if (*pc == 26)
     {
         int sddf = 0;
     }
@@ -233,7 +236,7 @@ int getIoRegister(int address)
         case IO_IRQ_STATUS_2:
         case IO_IRQ_HANDLER:
         case IO_IRQ_RETURN:
-            //return  readinterrupts(address);
+            return  readInterrupts(address);
             break;
         case IO_CLKS:
         case IO_TIMER_ENABLE:

@@ -1,33 +1,33 @@
-	out $zero, $zero, $imm2, $imm1, 1, 2		# enable irq2
-	sll $sp, $imm1, $imm2, $zero, 1, 11		# set $sp = 1 << 11 = 2048
-	out $zero, $imm1, $zero, $imm2, 6, L3		# set irqhandler as L3
-	lw $a0, $zero, $imm2, $zero, 0, 64		# get x from address 64
-	jal $ra, $zero, $zero, $imm2, 0, fib		# calc $v0 = fib(x)
-	sw $zero, $zero, $imm2, $v0, 0, 65		# store fib(x) in 65
-	halt $zero, $zero, $zero, $zero, 0, 0		# halt
+	out $zero, $zero, $imm2, $imm1, 1, 2		# enable irq2                            0
+	sll $sp, $imm1, $imm2, $zero, 1, 11		# set $sp = 1 << 11 = 2048                   1
+	out $zero, $imm1, $zero, $imm2, 6, L3		# set irqhandler as L3                   2
+	lw $a0, $zero, $imm2, $zero, 0, 64		# get x from address 64                   3
+	jal $ra, $zero, $zero, $imm2, 0, fib		# calc $v0 = fib(x)                   4
+	sw $zero, $zero, $imm2, $v0, 0, 65		# store fib(x) in 65                      5
+	halt $zero, $zero, $zero, $zero, 0, 0		# halt                                6
 fib:
-	add $sp, $sp, $imm2, $zero, 0, -3		# adjust stack for 3 items
-	sw $zero, $sp, $imm2, $s0, 0, 2			# save $s0
-	sw $zero, $sp, $imm2, $ra, 0, 1			# save return address
-	sw $zero, $sp, $imm2, $a0, 0, 0			# save argument
-	bgt $zero, $a0, $imm1, $imm2, 1, L1		# jump to L1 if x > 1
+	add $sp, $sp, $imm2, $zero, 0, -3		# adjust stack for 3 items                   7
+	sw $zero, $sp, $imm2, $s0, 0, 2			# save $s0                    8
+	sw $zero, $sp, $imm2, $ra, 0, 1			# save return address                    9
+	sw $zero, $sp, $imm2, $a0, 0, 0			# save argument                                           10
+	bgt $zero, $a0, $imm1, $imm2, 1, L1		# jump to L1 if x > 1                   11
 	add $v0, $a0, $zero, $zero, 0, 0		# otherwise, fib(x) = x, copy input
-	beq $zero, $zero, $zero, $imm2, 0, L2		# jump to L2
+	beq $zero, $zero, $zero, $imm2, 0, L2		# jump to L2                              13
 L1:
-	sub $a0, $a0, $imm2, $zero, 0, 1		# calculate x - 1
+	sub $a0, $a0, $imm2, $zero, 0, 1		# calculate x - 1                         14
 	jal $ra, $zero, $zero, $imm2, 0, fib		# calc $v0=fib(x-1)
-	add $s0, $v0, $imm2, $zero, 0, 0		# $s0 = fib(x-1)
+	add $s0, $v0, $imm2, $zero, 0, 0		# $s0 = fib(x-1)                    16
 	lw $a0, $sp, $imm2, $zero, 0, 0			# restore $a0 = x
-	sub $a0, $a0, $imm2, $zero, 0, 2		# calculate x - 2
+	sub $a0, $a0, $imm2, $zero, 0, 2		# calculate x - 2                   18
 	jal $ra, $zero, $zero, $imm2, 0, fib		# calc fib(x-2)
-	add $v0, $v0, $s0, $zero, 0, 0			# $v0 = fib(x-2) + fib(x-1)
+	add $v0, $v0, $s0, $zero, 0, 0			# $v0 = fib(x-2) + fib(x-1)                   20
 	lw $a0, $sp, $imm2, $zero, 0, 0			# restore $a0
-	lw $ra, $sp, $imm2, $zero, 0, 1			# restore $ra
+	lw $ra, $sp, $imm2, $zero, 0, 1			# restore $ra                   22
 	lw $s0, $sp, $imm2, $zero, 0, 2			# restore $s0
 L2:
-	add $sp, $sp, $imm2, $zero, 0, 3		# pop 3 items from stack
+	add $sp, $sp, $imm2, $zero, 0, 3		# pop 3 items from stack                   24
 	add $t0, $a0, $zero, $zero, 0, 0		# $t0 = $a0
-	sll $t0, $t0, $imm2, $zero, 0, 16		# $t0 = $t0 << 16
+	sll $t0, $t0, $imm2, $zero, 0, 16		# $t0 = $t0 << 16                   26
 	add $t0, $t0, $v0, $zero, 0, 0			# $t0 = $t0 + $v0
 	out $zero, $zero, $imm2, $t0, 0, 10		# write $t0 to display
 	beq $zero, $zero, $zero, $ra, 0, 0		# and return

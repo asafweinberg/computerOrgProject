@@ -54,7 +54,8 @@ int readMemory(int address) {
 void writeMemory(int address, int value) {
     if (address >= memorySize || address < 0) {
         printf("error in writeMemory with address number: %i", address);
-        exit(1);
+        //exit(1);
+        return; // TODO: think what to do, the requirements are not to exit
     }
     memory[address] = value;
 }
@@ -73,7 +74,7 @@ void exitMemory() {
         fprintf(dmemoutFile, "%08X\n", memory[i]);
     }
     fclose(dmemoutFile);
-    free(memory);
+    //free(memory);
 }
 
 int findMemLastIndex() {

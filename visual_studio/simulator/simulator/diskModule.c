@@ -53,7 +53,7 @@ void initDisk(char* diskin, char* diskout)
     fclose(diskFile);
     diskOutAddress = diskout;
 }
-
+ 
 void diskUpdate()
 {
     currentClock = getClockCycles();
@@ -181,7 +181,6 @@ void exitDisk()
 		fprintf(diskOutFile, "%08X\n", disk[i / sectorSize][i % sectorSize]);
     }
     fclose(diskOutFile);
-    free(disk);
 }
 
 int findDiskLastIndex() 

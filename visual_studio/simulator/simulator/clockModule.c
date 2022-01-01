@@ -3,7 +3,7 @@
 
 #define CLOCK_MAX 0xFFFFFFFF
 
-unsigned int timercurrent, timerMax, timerEnabled, interrupt0, clks;
+unsigned int timercurrent, timerMax, timerEnabled, interrupt0, clks; //todo: int32
 unsigned long clockCycles;
 char* outputFileName;
 
