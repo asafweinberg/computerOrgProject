@@ -14,16 +14,6 @@ char *ouputTxt, *outputYuv;
 
 void initMonitor(char* monitor, char* monitorYuv)
 {
-   /* for (int i = 0; i < MONITOR_LEN; i++)
-    {
-        monitorBuffer[i] = (char*)calloc(MONITOR_LEN, sizeof(char));
-        if(!monitorBuffer[i])
-        {
-            printf("error in initMonitor, unable to allocate memory");
-            exit(1);
-        }
-    }*/
-
     monitoraddr = 0;
     monitordata = 0;
     monitorcmd = 0;
@@ -80,15 +70,15 @@ void writePixel(int value)
     if(value == 1)
     {
     int row, col;
-    row = monitoraddr/MONITOR_LEN;
-    col = monitoraddr%MONITOR_LEN;
+    row = monitoraddr / MONITOR_LEN;
+    col = monitoraddr % MONITOR_LEN;
     if (row < 0 || col < 0 || row > MONITOR_LEN || col > MONITOR_LEN)
     {
         printf("error in getPixelData in readMonitor, row = %d, col = %d", row, col);
         exit(1);
     }
     
-    monitorBuffer[monitoraddr/MONITOR_LEN][monitoraddr%MONITOR_LEN] = monitordata;
+    monitorBuffer[monitoraddr / MONITOR_LEN][monitoraddr % MONITOR_LEN] = (unsigned char) monitordata;
     }
     
 }
@@ -102,11 +92,11 @@ void exitMonitor()
     //char buffer [8];
 
 
-    for(i=0 ; i<MONITOR_LEN ; i++)
+    for(i = 0; i < MONITOR_LEN; i++)
     {
-        for(j=0 ; j<MONITOR_LEN ; j++ )
+        for(j = 0; j < MONITOR_LEN; j++ )
         {
-            fprintf(monitorFile , "%02X\n" , monitorBuffer[i][j]);
+            fprintf(monitorFile, "%02X\n", monitorBuffer[i][j]);
             
             /*_itoa((int)(monitorBuffer[i][j]) , buffer, 2);
             fprintf(monitorYuvFile , "%s\n" , buffer);*/
@@ -116,6 +106,4 @@ void exitMonitor()
 
     fclose(monitorFile);
     fclose(monitorYuvFile);
-
-
 }

@@ -17,7 +17,7 @@ void writeHwtraceOutput(FILE * hwF, int instT, int regNum, int data); //TODO add
 
 
 
-int executeInstruction(int* registers, int* instruction, int* pc, FILE * hwtraceF)
+int executeInstruction(int* registers, int* instruction, int* pc, FILE * hwtraceF, int* handlingInterupt)
 {
     int opCode;
     int rdVal, rsVal, rtVal, rmVal;
@@ -79,40 +79,41 @@ int executeInstruction(int* registers, int* instruction, int* pc, FILE * hwtrace
     {
         switch (instruction[0])
         {
-        case 15:
-            registers[instruction[rdIndex]] = *pc + 1;
-            *pc = rmVal & 0xFFF;
-            break;
-        case 16:
-            registers[instruction[rdIndex]] = execLw(rsVal, rtVal, rmVal); // TODO: implement on memory
-            *pc = *pc + 1;
-            break;
-        case 17:
-            execSw(rdVal, rsVal, rtVal, rmVal); // TODO: implement on memory
-            *pc = *pc + 1;
-            break;
-        case 18:
-            *pc = getIoRegister(IO_IRQ_RETURN); // TODO: implement on IO module or add implementation here and send directly to modules?
-            break;
-        case 19:
-            registers[instruction[rdIndex]] = getIoRegister(rsVal + rtVal); // TODO: implement function 
-            *pc = *pc + 1;
-            writeHwtraceOutput(hwtraceF, 19, rsVal + rtVal, registers[instruction[rdIndex]]);
-            break;
-        case 20:
-            setIoRegister(rsVal + rtVal, rmVal); // TODO: implement function 
-            *pc = *pc + 1;
-            writeHwtraceOutput(hwtraceF, 20, rsVal + rtVal, rmVal);
-            break;
-        case 21:
-            return false;
-            break;
+            case 15:
+                registers[instruction[rdIndex]] = *pc + 1;
+                *pc = rmVal & 0xFFF;
+                break;
+            case 16:
+                registers[instruction[rdIndex]] = execLw(rsVal, rtVal, rmVal); // TODO: implement on memory
+                *pc = *pc + 1;
+                break;
+            case 17:
+                execSw(rdVal, rsVal, rtVal, rmVal); // TODO: implement on memory
+                *pc = *pc + 1;
+                break;
+            case 18:
+                *pc = getIoRegister(IO_IRQ_RETURN); // TODO: implement on IO module or add implementation here and send directly to modules?
+                *handlingInterupt = 0;
+                break;
+            case 19:
+                registers[instruction[rdIndex]] = getIoRegister(rsVal + rtVal); // TODO: implement function 
+                *pc = *pc + 1;
+                writeHwtraceOutput(hwtraceF, 19, rsVal + rtVal, registers[instruction[rdIndex]]);
+                break;
+            case 20:
+                setIoRegister(rsVal + rtVal, rmVal); // TODO: implement function 
+                *pc = *pc + 1;
+                writeHwtraceOutput(hwtraceF, 20, rsVal + rtVal, rmVal);
+                break;
+            case 21:
+                return false;
+                break;
 
-        default:
-            printf("error: opcode does not exists\n");
-            printf("on pc = %d, opcode = %d\n", *pc, opCode);
-            exit(1);
-            break;
+            default:
+                printf("error: opcode does not exists\n");
+                printf("on pc = %d, opcode = %d\n", *pc, opCode);
+                exit(1);
+                break;
         }
     }
     return true;
@@ -121,18 +122,18 @@ int executeInstruction(int* registers, int* instruction, int* pc, FILE * hwtrace
 void writeHwtraceOutput(FILE * hwF, int instT, int regNum, int data)
 {
     int clock = readClock(IO_CLKS);
-    fprintf(hwF , "%d " , clock);
+    fprintf(hwF, "%d ", clock);
     if(instT == 19) //in == READ
     {
-	    fprintf(hwF , "READ ");
+	    fprintf(hwF, "READ ");
     }
 
     else
     {
-	    fprintf(hwF , "WRITE ");
+	    fprintf(hwF, "WRITE ");
     }
-    fprintf(hwF , "%s " , IORegistersName[regNum]);
-    fprintf(hwF , "%08X\n" , data); //TODO CHECK IT
+    fprintf(hwF, "%s ", IORegistersName[regNum]);
+    fprintf(hwF, "%08X\n", data); //TODO CHECK IT
 }
 
 
@@ -141,36 +142,38 @@ int execArithmetic(int opCode, int rsVal, int rtVal, int rmVal)
     int value;
     switch (opCode)
     {
-    case 0:
-        value = rsVal + rtVal + rmVal;
-        break;
-    case 1:
-        value = rsVal - rtVal - rmVal;
-        break;
-    case 2:
-        value = rsVal * rtVal + rmVal;
-        break;
-    case 3:
-        value = rsVal & rtVal & rmVal;
-        break;
-    case 4:
-        value = rsVal | rtVal | rmVal;
-        break;
-    case 5:
-        value = rsVal ^ rtVal ^ rmVal;
-        break;
-    case 6:
-        value = rsVal << rtVal;
-        break;
-    case 7:
-        value = (int)((unsigned int)rsVal >> rtVal);
-        break;
-    case 8:
-        value = rsVal >> rtVal;
-        break;
+        case 0:
+            value = rsVal + rtVal + rmVal;
+            break;
+        case 1:
+            value = rsVal - rtVal - rmVal;
+            break;
+        case 2:
+            value = rsVal * rtVal + rmVal;
+            break;
+        case 3:
+            value = rsVal & rtVal & rmVal;
+            break;
+        case 4:
+            value = rsVal | rtVal | rmVal;
+            break;
+        case 5:
+            value = rsVal ^ rtVal ^ rmVal;
+            break;
+        case 6:
+            value = rsVal << rtVal;
+            break;
+        case 7:
+            value = (int)((unsigned int)rsVal >> rtVal);
+            break;
+        case 8:
+            value = rsVal >> rtVal;
+            break;
 
-    default:
-        break;
+        default:
+            printf("error in execBranch");
+            exit(1);
+            break;
     }
 }
 
@@ -178,28 +181,28 @@ int execBranch(int opCode, int rsVal, int rtVal)
 {
     switch (opCode)
     {
-    case 9:
-        return rsVal == rtVal;
-        break;
-    case 10:
-        return rsVal != rtVal;
-        break;
-    case 11:
-        return rsVal < rtVal;
-        break;
-    case 12:
-        return rsVal > rtVal;
-        break;
-    case 13:
-        return rsVal <= rtVal;
-        break;
-    case 14:
-        return rsVal >= rtVal;
-        break;
-    default:
-        printf("error in execBranch");
-        exit(1);
-        break;
+        case 9:
+            return rsVal == rtVal;
+            break;
+        case 10:
+            return rsVal != rtVal;
+            break;
+        case 11:
+            return rsVal < rtVal;
+            break;
+        case 12:
+            return rsVal > rtVal;
+            break;
+        case 13:
+            return rsVal <= rtVal;
+            break;
+        case 14:
+            return rsVal >= rtVal;
+            break;
+        default:
+            printf("error in execBranch");
+            exit(1);
+            break;
     }
 }
 
@@ -222,47 +225,47 @@ int getIoRegister(int address)
 {
     switch (address)
     {
-    case IO_IRQ_ENABLE_0:
-    case IO_IRQ_ENABLE_1:
-    case IO_IRQ_ENABLE_2:
-    case IO_IRQ_STATUS_0:
-    case IO_IRQ_STATUS_1:
-    case IO_IRQ_STATUS_2:
-    case IO_IRQ_HANDLER:
-    case IO_IRQ_RETURN:
-        //return  readinterrupts(address);
-        break;
-    case IO_CLKS:
-    case IO_TIMER_ENABLE:
-    case IO_TIMER_CURRENT:
-    case IO_TIMER_MAX:
-        return readClock(address);
-        break;
-    case IO_LEDS:
-        return readLeds(address);
-        break;
-    case IO_DISPLAY_7_SEG:
-        return readDisplay(address); //TODO
-        break;
-    case IO_DISK_CMD:
-    case IO_DISK_SECTOR:
-    case IO_DISK_BUFFER:
-    case IO_DISK_STATUS:
-        //return readDisk(address); //TODO
-        break;
-    case IO_RESERVED1:
-    case IO_RESERVED2:
-        //return readReserved(address); //TODO
-        break;
-    case IO_MONITOR_ADDR:
-    case IO_MONITOR_DATA:
-    case IO_MONITOR_CMD:
-        return readMonitor(address); //TODO
-        break;
-    default:
-        printf("error on getIoRegister, requested address is %d", address);
-        exit(1);
-        break;
+        case IO_IRQ_ENABLE_0:
+        case IO_IRQ_ENABLE_1:
+        case IO_IRQ_ENABLE_2:
+        case IO_IRQ_STATUS_0:
+        case IO_IRQ_STATUS_1:
+        case IO_IRQ_STATUS_2:
+        case IO_IRQ_HANDLER:
+        case IO_IRQ_RETURN:
+            //return  readinterrupts(address);
+            break;
+        case IO_CLKS:
+        case IO_TIMER_ENABLE:
+        case IO_TIMER_CURRENT:
+        case IO_TIMER_MAX:
+            return readClock(address);
+            break;
+        case IO_LEDS:
+            return readLeds(address);
+            break;
+        case IO_DISPLAY_7_SEG:
+            return readDisplay(address);
+            break;
+        case IO_DISK_CMD:
+        case IO_DISK_SECTOR:
+        case IO_DISK_BUFFER:
+        case IO_DISK_STATUS:
+            return readDisk(address);
+            break;
+        case IO_RESERVED1:
+        case IO_RESERVED2:
+            //return readReserved(address); //TODO
+            break;
+        case IO_MONITOR_ADDR:
+        case IO_MONITOR_DATA:
+        case IO_MONITOR_CMD:
+            return readMonitor(address);
+            break;
+        default:
+            printf("error on getIoRegister, requested address is %d", address);
+            exit(1);
+            break;
     }
 }
 
@@ -271,47 +274,47 @@ int setIoRegister(int address, int value)
 {
     switch (address)
     {
-    case IO_IRQ_ENABLE_0:
-    case IO_IRQ_ENABLE_1:
-    case IO_IRQ_ENABLE_2:
-    case IO_IRQ_STATUS_0:
-    case IO_IRQ_STATUS_1:
-    case IO_IRQ_STATUS_2:
-    case IO_IRQ_HANDLER:
-    case IO_IRQ_RETURN:
-        //return  writeinterrupts(address, value);
-        break;
-    case IO_CLKS:
-    case IO_TIMER_ENABLE:
-    case IO_TIMER_CURRENT:
-    case IO_TIMER_MAX:
-        return writeClock(address, value);
-        break;
-    case IO_LEDS:
-        return writeLeds(address, value);
-        break;
-    case IO_DISPLAY_7_SEG:
-        return writeDisplay(address, value); //TODO
-        break;
-    case IO_DISK_CMD:
-    case IO_DISK_SECTOR:
-    case IO_DISK_BUFFER:
-    case IO_DISK_STATUS:
-        //return writeDisk(address, value); //TODO
-        break;
-    case IO_RESERVED1:
-    case IO_RESERVED2:
-        //return writeReserved(address, value); //TODO
-        break;
-    case IO_MONITOR_ADDR:
-    case IO_MONITOR_DATA:
-    case IO_MONITOR_CMD:
-        return writeMonitor(address, value); //TODO
-        break;
-    default:
-        printf("error on setIoRegister, requested address is %d, value is: %d", address, value);
-        exit(1);
-        break;
+        case IO_IRQ_ENABLE_0:
+        case IO_IRQ_ENABLE_1:
+        case IO_IRQ_ENABLE_2:
+        case IO_IRQ_STATUS_0:
+        case IO_IRQ_STATUS_1:
+        case IO_IRQ_STATUS_2:
+        case IO_IRQ_HANDLER:
+        case IO_IRQ_RETURN:
+            return  writeInterrupts(address, value);
+            break;
+        case IO_CLKS:
+        case IO_TIMER_ENABLE:
+        case IO_TIMER_CURRENT:
+        case IO_TIMER_MAX:
+            return writeClock(address, value);
+            break;
+        case IO_LEDS:
+            return writeLeds(address, value);
+            break;
+        case IO_DISPLAY_7_SEG:
+            return writeDisplay(address, value);
+            break;
+        case IO_DISK_CMD:
+        case IO_DISK_SECTOR:
+        case IO_DISK_BUFFER:
+        case IO_DISK_STATUS:
+            return writeDisk(address, value);
+            break;
+        case IO_RESERVED1:
+        case IO_RESERVED2:
+            //return writeReserved(address, value); //TODO
+            break;
+        case IO_MONITOR_ADDR:
+        case IO_MONITOR_DATA:
+        case IO_MONITOR_CMD:
+            return writeMonitor(address, value);
+            break;
+        default:
+            printf("error on setIoRegister, requested address is %d, value is: %d", address, value);
+            exit(1);
+            break;
     }
 }
 

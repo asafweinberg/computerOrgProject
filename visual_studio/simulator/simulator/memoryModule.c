@@ -12,23 +12,29 @@ static int memory[memorySize];
 static char* dmemoutAddress;
 
 
-void initMemory(char* dmemin, char* dmemout) {
+void initMemory(char* dmemin, char* dmemout)
+{
     char line[MEMORY_LINE_LEN];
     int counter = 0;
     int i;
     char* ptr;
+
     FILE* memFile = fopen(dmemin, "r");
-    if (!memFile) {
+    if (!memFile)
+    {
         printf("error in initMemory in reading dmemin: %s\n", dmemin);
         exit(1);
     }
-    while (fgets(line, MEMORY_LINE_LEN, memFile)) {
+
+    while (fgets(line, MEMORY_LINE_LEN, memFile))
+    {
         line[8] = '\0';
         int decVal = (int)strtol(line, &ptr, 16);
         memory[counter] = decVal;
         counter++;
     }
-    if (counter < memorySize - 1) {
+    if (counter < memorySize - 1)
+    {
         // need to fill the rest of the memory
         for (i = counter; i < memorySize; i++) {
             memory[i] = 0;
