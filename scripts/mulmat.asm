@@ -12,6 +12,7 @@ sw $zero, $sp, $imm2, $t2, 0, 1 #initialize sp[3] as j=0
 
 KZERO:
 add $t2, $zero, $zero, $zero, 0, 0 #make t2 zero to put as k
+sw $zero, $sp, $imm2, $t2, 0, 3 #initialize sp[1] as new value to save, as zero default
 sw $zero, $sp, $imm2, $t2, 0, 2 #initialize sp[2] as k=0
 
 LOADMULT:
@@ -19,7 +20,7 @@ LOADMULT:
 lw $t0, $sp, $imm2, $zero, 0, 0 #load to t0 the i value
 sll $t0, $t0, $imm1, $zero, 2, 0 #t0 = i*4(row size)
 lw $t2, $sp, $imm2, $zero, 0, 2 #load to t2 the k value
-add $t0, $t2, $zero, $zero, 0, 0 #t0 = i*4 + k
+add $t0, $t0, $t2, $zero, 0, 0 #t0 = i*4 + k
 add $s0, $s0, $t0, $zero, 0, 0 #byte address of a0[i][k]
 lw $t0, $s0, $zero, $zero, 0, 0 # t0 now has a0[i][k]
 
@@ -41,7 +42,7 @@ sw $zero, $sp, $imm2, $t2, 0, 3 #save temp value in sp[1]
 lw $t0, $sp, $imm2, $zero, 0, 0 #load to t0 the i value
 sll $t0, $t0, $imm1, $zero, 2, 0 #t0 = i*4(row size)
 lw $t2, $sp, $imm2, $zero, 0, 2 #load to t2 the k value
-add $t0, $t2, $zero, $zero, 0, 0 #t0 = i*4 + k
+add $t0, $t0, $t2, $zero, 0, 0 #t0 = i*4 + k
 sub $s0, $s0, $t0, $zero, 0, 0 #went back to s0 base address
 
 lw $t1, $sp, $imm2, $zero, 0, 2 #load to t1 the k value
@@ -83,36 +84,36 @@ add $sp, $sp, $imm1, $zero, 4, 0 #'return' space in stack
 #beq $zero, $zero, $zero, $ra, 0, 0 #done
 halt $zero, $zero, $zero, $zero, 0, 0 
 
-.word 0x100 1
-.word 0x101 0
-.word 0x102 0
-.word 0x103 0
-.word 0x104 0
-.word 0x105 1
+.word 0x100 -1
+.word 0x101 5
+.word 0x102 -4
+.word 0x103 3
+.word 0x104 2
+.word 0x105 20
 .word 0x106 0
-.word 0x107 0
-.word 0x108 0
-.word 0x109 0
-.word 0x10a 1
-.word 0x10b 0
-.word 0x10c 0
-.word 0x10d 0
-.word 0x10e 0
-.word 0x10f 1
+.word 0x107 9
+.word 0x108 11
+.word 0x109 -50
+.word 0x10a 20
+.word 0x10b 4
+.word 0x10c 3
+.word 0x10d 1
+.word 0x10e -1
+.word 0x10f 15
     
-.word 0x110 1
-.word 0x111 0
-.word 0x112 0
-.word 0x113 0
-.word 0x114 0
-.word 0x115 1
-.word 0x116 0
-.word 0x117 0
-.word 0x118 0
+.word 0x110 2
+.word 0x111 4
+.word 0x112 6
+.word 0x113 8
+.word 0x114 20
+.word 0x115 -9
+.word 0x116 4
+.word 0x117 5
+.word 0x118 3
 .word 0x119 0
-.word 0x11a 1
-.word 0x11b 0
-.word 0x11c 0
-.word 0x11d 0
-.word 0x11e 0
-.word 0x11f 1
+.word 0x11a 0
+.word 0x11b 32
+.word 0x11c -1
+.word 0x11d -2
+.word 0x11e -3
+.word 0x11f 4

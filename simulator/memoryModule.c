@@ -24,7 +24,8 @@ void initMemory(char* dmemin, char* dmemout) {
     }
     while (fgets(line, MEMORY_LINE_LEN, memFile)) {
         line[8] = '\0';
-        int decVal = (int)strtol(line, &ptr, 16);
+        long long decVal = (int) strtol(line, &ptr, 0);
+        decVal = decVal & 0xFFF;
         memory[counter] = decVal;
         counter++;
     }
@@ -63,11 +64,10 @@ void exitMemory() {
         printf("error in exitMemory in writing to dmemout: %s\n", dmemoutAddress);
         exit(1);
     }
-    for(i = 0; i <= lastIndex + 1; i++) {
+    for(i = 0; i <= lastIndex; i++) {
 		fprintf(dmemoutFile, "%08X\n", memory[i]);
     }
     fclose(dmemoutFile);
-    free(memory);
 }
 
 int findMemLastIndex() {
