@@ -245,8 +245,8 @@ void exitSimulator()
 {
     exitClock();
     /*exitDisplay();
-    exitLeds();
-    exitMemory();*/
+    exitLeds();*/
+    exitMemory();
     exitMonitor();
     //TODO: exitDisk, exitInterrupts
     regFileHandle();
