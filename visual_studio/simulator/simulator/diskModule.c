@@ -60,10 +60,10 @@ void diskUpdate()
     if (currentClock == lastClockStamp + 1024)
     {
         executeDisk(diskcmd);
+        diskstatus = 0; //free to get more instructions
     }
-    diskstatus = 0; //free to get more instructions
-    diskcmd = 0;
-    //TODO: irqstatus1 needs to be set to 1
+    // diskstatus = 0; //free to get more instructions
+    // diskcmd = 0;
 }
 
 int readDisk(int address)
@@ -177,7 +177,7 @@ void exitDisk()
         printf("error in exitDisk in writing to diskout: %s\n", diskOutAddress);
         exit(1);
     }
-    for(i = 0; i <= lastIndex + 1; i++) {
+    for(i = 0; i < lastIndex ; i++) {
 		fprintf(diskOutFile, "%08X\n", disk[i / sectorSize][i % sectorSize]);
     }
     fclose(diskOutFile);

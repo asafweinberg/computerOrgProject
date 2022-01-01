@@ -3,12 +3,14 @@
 #define MEMORY_LINE_LEN 10
 
 #include <math.h>
+#include <ctype.h>
 #include "modules.h"
+#include <stdint.h>
 
 int findMemLastIndex();
 
 
-static int memory[memorySize];
+static int32_t memory[memorySize];
 static char* dmemoutAddress;
 
 
@@ -18,6 +20,7 @@ void initMemory(char* dmemin, char* dmemout)
     int counter = 0;
     int i;
     char* ptr;
+    long temp;
 
     FILE* memFile = fopen(dmemin, "r");
     if (!memFile)
@@ -29,7 +32,7 @@ void initMemory(char* dmemin, char* dmemout)
     while (fgets(line, MEMORY_LINE_LEN, memFile))
     {
         line[8] = '\0';
-        int decVal = (int)strtol(line, &ptr, 16);
+        int32_t decVal = strtoll(line, NULL, 16);
         memory[counter] = decVal;
         counter++;
     }
@@ -70,15 +73,14 @@ void exitMemory() {
         printf("error in exitMemory in writing to dmemout: %s\n", dmemoutAddress);
         exit(1);
     }
-    for (i = 0; i <= lastIndex + 1; i++) {
+    for (i = 0; i <= lastIndex; i++) {
         fprintf(dmemoutFile, "%08X\n", memory[i]);
     }
     fclose(dmemoutFile);
-    //free(memory);
 }
 
 int findMemLastIndex() {
-    int lastIndex;
+    int lastIndex = 0;
     int i;
     for (i = 0; i < memorySize; i++) {
         if (memory[i] != 0) {

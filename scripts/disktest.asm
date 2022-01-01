@@ -24,7 +24,7 @@ LOOP:                                       # s0 goes from 7 to 0
         in $s1, $imm1, $zero, $zero, 17, 0      # s1 = diskstatus
         beq $zero, $s1, $imm1, $imm2, 1, LOOP3  # if s1 == 1 jump LOOP2
 
-    sub $s0, $s0, imm1, $zero, 1, 0         # s0--
+    sub $s0, $s0, $imm1, $zero, 1, 0         # s0--
     beq $zero, $zero, $zero, $imm1, LOOP, 0 # jump LOOP
 
 ENDLOOP: halt $zero, $zero, $zero, $zero, 0, 0
