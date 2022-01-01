@@ -69,15 +69,19 @@ void exitMemory() {
         printf("error in exitMemory in writing to dmemout: %s\n", dmemoutAddress);
         exit(1);
     }
-    for (i = 0; i <= lastIndex + 1; i++) {
+    for (i = 0; i < lastIndex; i++) {
+        if (lastIndex == 0) {
+            fprintf(dmemoutFile, "%08X\n", memory[i]);
+            break;
+        }
         fprintf(dmemoutFile, "%08X\n", memory[i]);
     }
     fclose(dmemoutFile);
-    free(memory);
+    //free(memory);
 }
 
 int findMemLastIndex() {
-    int lastIndex;
+    int lastIndex = 0;
     int i;
     for (i = 0; i < memorySize; i++) {
         if (memory[i] != 0) {

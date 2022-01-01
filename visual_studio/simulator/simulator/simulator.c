@@ -242,7 +242,7 @@ int initialization(int argc, char* argv[])
 
     initSimulator(imemin, regout, trace, hwregtrace); 
     initMemory(dmemin, dmemout);
-    //initDisk(diskin, diskout);
+    initDisk(diskin, diskout);
     //// initinterrupts(irq2in);
     initClock(cycles);
     //initLeds(leds);
@@ -260,6 +260,7 @@ void exitSimulator()
     exitMemory();
     exitMonitor();
     //TODO: exitDisk, exitInterrupts
+    exitDisk();
     regFileHandle();
 }
 
