@@ -14,6 +14,7 @@ static int irq;
 static int irq2Num;
 static int currentIrq2Index;
 static long* irq2Listings;
+static int isInMiddleOfIrq;
 
 //every clock cycle
 
