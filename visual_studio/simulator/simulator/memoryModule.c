@@ -19,8 +19,6 @@ void initMemory(char* dmemin, char* dmemout)
     char line[MEMORY_LINE_LEN];
     int counter = 0;
     int i;
-    char* ptr;
-    long temp;
 
     FILE* memFile = fopen(dmemin, "r");
     if (!memFile)
@@ -54,7 +52,7 @@ int readMemory(int address) {
     }
     return memory[address];
 }
-void writeMemory(int address, int value) {
+void writeMemory(int address, int32_t value) {
     if (address >= memorySize || address < 0) {
         printf("error in writeMemory with address number: %i", address);
         exit(1);
