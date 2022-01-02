@@ -19,6 +19,7 @@ void initMemory(char* dmemin, char* dmemout)
     int i;
     char* ptr;
 
+
     FILE* memFile = fopen(dmemin, "r");
     if (!memFile)
     {
