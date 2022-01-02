@@ -3,9 +3,10 @@
 
 #define CLOCK_MAX 0xFFFFFFFF
 
-unsigned int timercurrent, timerMax, timerEnabled, interrupt0, clks;
+int32_t timercurrent, timerMax, clks;
+int timerEnabled, interrupt0;
 unsigned long clockCycles;
-char* outputFileName;
+char* clockOutputFileName;
 
 
 void initClock(char* cycles)
@@ -15,7 +16,7 @@ void initClock(char* cycles)
     interrupt0 = 0;
     timercurrent = 0;
     timerEnabled = 0;
-    outputFileName = cycles;
+    clockOutputFileName = cycles;
 }
 
 
@@ -76,10 +77,10 @@ void exitClock()
 {
     FILE* fp;
 
-    fp = fopen(outputFileName, "w");
+    fp = fopen(clockOutputFileName, "w");
     if (!fp)
     {
-        printf("error opening output file for clock with name: %s", outputFileName);
+        printf("error opening output file for clock with name: %s", clockOutputFileName);
         return;
     }
     fprintf(fp, "%lu", clockCycles);

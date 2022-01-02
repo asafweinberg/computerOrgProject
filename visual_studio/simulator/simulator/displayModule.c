@@ -1,12 +1,12 @@
 #include "modules.h"
 
 int display;
-FILE* fpOutput;
+FILE* fpDisplayOutput;
 
 void initDisplay(char* outputFileName)
 {
-    fpOutput = fopen(outputFileName, "w");
-    if (!fpOutput)
+    fpDisplayOutput = fopen(outputFileName, "w");
+    if (!fpDisplayOutput)
     {
         printf("error opening output file for leds with name: %s", outputFileName);
         exit(1);
@@ -34,7 +34,7 @@ int writeDisplay(int address, int value)
     if (address == IO_DISPLAY_7_SEG)
     {
         display = value;
-        fprintf(fpOutput, "%u %08X\n", clock, display);
+        fprintf(fpDisplayOutput, "%u %08x\n", clock, display);
     }
     else
     {
@@ -46,5 +46,5 @@ int writeDisplay(int address, int value)
 
 void exitDisplay()
 {
-    fclose(fpOutput);
+    fclose(fpDisplayOutput);
 }

@@ -18,7 +18,7 @@ static int isInMiddleOfIrq;
 
 //every clock cycle
 
-void initInterupts(char* irq2in) {
+void initInterrupts(char* irq2in) {
     char line[MAX_LINE_LEN+1];
     int counter = 0;
     char* ptr;
@@ -134,7 +134,7 @@ int writeInterrupts(int address, int value)
 }
 
 
-int checkinterruption()
+int checkinterruption(int pc)
 {
     //get irq
     //irq==1 iff there is an interruption
@@ -146,7 +146,7 @@ int checkinterruption()
         // we are done reading irq2 from input file
         irq2status = 0;
     }
-    else if (irq2Listings[currentIrq2Index] == getClockCycles()) {
+    if (irq2Listings[currentIrq2Index] == getClockCycles() - 1) {
         irq2status = 1;
         currentIrq2Index++;
     }
@@ -156,6 +156,12 @@ int checkinterruption()
     irq0status = hasinterrupt0();
     irq1status = hasinterrupt1();
     irq = (irq0enable && irq0status) || (irq1enable && irq1status) || (irq2enable && irq2status);
+
+    if (irq)
+    {
+        irqreturn = pc;
+    }
+
     if (irq1status) {
         turnOffInterrupt1();
     }
