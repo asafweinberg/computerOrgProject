@@ -55,7 +55,8 @@ int readMemory(int address) {
 void writeMemory(int address, int32_t value) {
     if (address >= memorySize || address < 0) {
         printf("error in writeMemory with address number: %i", address);
-        exit(1);
+        //exit(1);
+        return; // TODO: think what to do, the requirements are not to exit
     }
     memory[address] = value;
 }

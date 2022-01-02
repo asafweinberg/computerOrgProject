@@ -21,17 +21,23 @@ int main(int argc, char* argv[])
     FILE* traceF = fopen(traceFile,"w");
     FILE* hwtraceF = fopen(hwregtraceFile,"w");
 
-    while (pc < instructions->length)
+    while (pc < instructions->length) // todo: check condition
     {
-        // printRegisters();
-        writeTraceOutput(pc, traceF); 
+        if (getClockCycles() == 111)
+        {
+            debug = 1;
+        }
 
         diskUpdate();
-        if (!handlingInterupt && checkinterruption()) //TODO: save in flag. if the flag is true top checking for interrupts. if reti switch the flag to false.
+        if (!handlingInterupt && checkinterruption(pc))
         {
-            pc = getIoRegister(IO_IRQ_HANDLER); //TODO: think if make "getHandlerAddress" to make it more readable
+            pc = getIoRegister(IO_IRQ_HANDLER);
             handlingInterupt = 1;
         }
+
+        setImmRegisters(registers, instructions->instructionArr[pc]);
+        writeTraceOutput(pc, traceF);
+
         if (!executeInstruction(registers, instructions->instructionArr[pc], &pc, hwtraceF, &handlingInterupt))
         {
             exitSimulator();
@@ -40,12 +46,8 @@ int main(int argc, char* argv[])
             break;
         }
         
-        updateClock(); // TODO: check where to update the clock
+        updateClock();
     }
-
-    //exitSimulator(); // check if relevant
-
-    //printInstructions();
 }
 
 
@@ -114,8 +116,8 @@ void initInstructions(char* fileName)
 
     while (fgets(line, lineLength, fp))
     {
-        //TODO: delete '\n' in the end of the line
         strcpy(tempOrigInstructions[instructions->length] , line);
+        tempOrigInstructions[instructions->length][12] = '\0';
 
         addInstruction(tempInstructions, line, instructions->length);
         (instructions->length)++;
@@ -243,10 +245,10 @@ int initialization(int argc, char* argv[])
     initSimulator(imemin, regout, trace, hwregtrace); 
     initMemory(dmemin, dmemout);
     initDisk(diskin, diskout);
-    //// initinterrupts(irq2in);
+    initInterrupts(irq2in);
     initClock(cycles);
-    //initLeds(leds);
-    //initDisplay(display7seg);
+    initLeds(leds);
+    initDisplay(display7seg);
     initMonitor(monitor, monitorYuv);
 
     return true; //TODO: check return value when error
@@ -255,11 +257,10 @@ int initialization(int argc, char* argv[])
 void exitSimulator()
 {
     exitClock();
-    /*exitDisplay();
-    exitLeds();*/
+    exitDisplay();
+    exitLeds();
     exitMemory();
     exitMonitor();
-    //TODO: exitDisk, exitInterrupts
     exitDisk();
     regFileHandle();
 }
@@ -285,22 +286,11 @@ void writeTraceOutput(int pc, FILE * traceF)
     fprintf(traceF , "%03X " , pc);
     fprintf(traceF , "%s " , instructions->originalInst[pc]);
 
-
-    //TODO: delete
-    printf("%d ", pc);
-    printf("%s ", instructions->originalInst[pc]);
-
-
-    for(i = 0 ; i< regSize-1 ; i++) 
+    for(i = 0 ; i < regSize - 1 ; i++) 
     {
-        fprintf(traceF, "%08X ", registers[i]); // TODO might need changes with negatives
-
-        printf("%d " , registers[i]); //TODO: delete
-
+        fprintf(traceF, "%08x ", registers[i]); // TODO might need changes with negatives
     }
-    fprintf(traceF, "%08X\n", registers[i]); // TODO might need changes with negatives
-
-    printf("%d\n" , registers[i]); // TODO: delete
+    fprintf(traceF, "%08x\n", registers[i]); // TODO might need changes with negatives
 
 }
 

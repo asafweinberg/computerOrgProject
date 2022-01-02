@@ -54,7 +54,7 @@ void initDisk(char* diskin, char* diskout)
     fclose(diskFile);
     diskOutAddress = diskout;
 }
-
+ 
 void diskUpdate()
 {
     currentClock = getClockCycles();
