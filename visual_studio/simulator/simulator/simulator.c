@@ -21,18 +21,17 @@ int main(int argc, char* argv[])
     FILE* traceF = fopen(traceFile,"w");
     FILE* hwtraceF = fopen(hwregtraceFile,"w");
 
-    while (pc < instructions->length)
+    while (pc < instructions->length) // todo: check condition
     {
         if (getClockCycles() == 111)
         {
             debug = 1;
         }
-        // printRegisters();
 
         diskUpdate();
-        if (!handlingInterupt && checkinterruption(pc)) //TODO: save in flag. if the flag is true top checking for interrupts. if reti switch the flag to false.
+        if (!handlingInterupt && checkinterruption(pc))
         {
-            pc = getIoRegister(IO_IRQ_HANDLER); //TODO: think if make "getHandlerAddress" to make it more readable
+            pc = getIoRegister(IO_IRQ_HANDLER);
             handlingInterupt = 1;
         }
 
@@ -47,12 +46,8 @@ int main(int argc, char* argv[])
             break;
         }
         
-        updateClock(); // TODO: check where to update the clock
+        updateClock();
     }
-
-    //exitSimulator(); // check if relevant
-
-    //printInstructions();
 }
 
 
@@ -121,7 +116,6 @@ void initInstructions(char* fileName)
 
     while (fgets(line, lineLength, fp))
     {
-        //TODO: delete '\n' in the end of the line
         strcpy(tempOrigInstructions[instructions->length] , line);
         tempOrigInstructions[instructions->length][12] = '\0';
 
@@ -292,22 +286,11 @@ void writeTraceOutput(int pc, FILE * traceF)
     fprintf(traceF , "%03X " , pc);
     fprintf(traceF , "%s " , instructions->originalInst[pc]);
 
-
-    //TODO: delete
-    //printf("%d ", pc);
-    //printf("%s ", instructions->originalInst[pc]);
-
-
-    for(i = 0 ; i< regSize-1 ; i++) 
+    for(i = 0 ; i < regSize - 1 ; i++) 
     {
         fprintf(traceF, "%08x ", registers[i]); // TODO might need changes with negatives
-
-        //printf("%d " , registers[i]); //TODO: delete
-
     }
     fprintf(traceF, "%08x\n", registers[i]); // TODO might need changes with negatives
-
-    //printf("%d\n" , registers[i]); // TODO: delete
 
 }
 
