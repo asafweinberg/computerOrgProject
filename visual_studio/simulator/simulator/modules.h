@@ -3,6 +3,7 @@
 
 void setImmRegisters(int* registers, int* instruction);
 int executeInstruction(int* registers, int* instruction, int* pc, FILE* hwtraceF, int* handlingInterupt);
+void writeHwtraceOutput(FILE* hwF, int instT, int regNum, int data);
 int execArithmetic(int opCode, int rsVal, int rtVal, int rmVal);
 int execBranch(int opCode, int rsVal, int rtVal);
 int execLw(int rsVal, int rtVal, int rmVal);
@@ -36,7 +37,7 @@ void turnOffInterrupt1();
 void initInterrupts(char* irq2in);
 int readInterrupts(int address);
 int writeInterrupts(int address, int value);
-int checkinterruption();
+int checkinterruption(int pc, int currHandIrq);
 
 
 

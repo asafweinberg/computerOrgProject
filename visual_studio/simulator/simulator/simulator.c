@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
         }
 
         diskUpdate();
-        if (!handlingInterupt && checkinterruption(pc))
+        if (checkinterruption(pc,handlingInterupt))
         {
             pc = getIoRegister(IO_IRQ_HANDLER);
             handlingInterupt = 1;
