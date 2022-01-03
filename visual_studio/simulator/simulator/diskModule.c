@@ -1,11 +1,12 @@
 #include "modules.h"
+#include <stdint.h>
 
 #define memorySize 4096
 #define MAX_LINE_LEN  500
 #define sectorsNum 128
 #define sectorSize 128
 
-static int* disk[sectorsNum];
+static int32_t* disk[sectorsNum];
 static int diskTotalSize = sectorsNum*sectorSize;
 static char* diskOutAddress;
 
@@ -24,7 +25,6 @@ void initDisk(char* diskin, char* diskout)
     char line[MAX_LINE_LEN + 1];
     int i;
     int counter = 0;
-    char* ptr;
     //init hardware registers
     diskcmd = 0;
     disksector = 0;
@@ -32,7 +32,7 @@ void initDisk(char* diskin, char* diskout)
     diskstatus = 0;
     for (i = 0; i < sectorsNum; i++) {
         // initiating each sector to be 512 bytes
-        disk[i] = (int*) calloc(sectorSize, sizeof(int));
+        disk[i] = (int32_t*) calloc(sectorSize, sizeof(int32_t));
         if (disk[i] == NULL) {
             printf("allocaion of disc sector num: %i failed\n", i);
             exit(1);
@@ -45,7 +45,8 @@ void initDisk(char* diskin, char* diskout)
     }
     while(fgets(line, MAX_LINE_LEN + 1, diskFile)) 
     {
-        int decVal = (int) strtol(line, &ptr, 16);
+        line[8] = '\0';
+        int32_t decVal = strtoll(line, NULL, 16);
         disk[(int)(counter / sectorSize)][(int)(counter % sectorSize)] = decVal; //counter/512 should be division by wholes
         counter++;
     }
