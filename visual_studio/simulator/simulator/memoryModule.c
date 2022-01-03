@@ -20,6 +20,7 @@ void initMemory(char* dmemin, char* dmemout)
     int counter = 0;
     int i;
 
+
     FILE* memFile = fopen(dmemin, "r");
     if (!memFile)
     {
