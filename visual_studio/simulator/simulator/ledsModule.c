@@ -1,12 +1,12 @@
 #include "modules.h"
 
-int leds;
-FILE* fpOutput;
+int32_t leds;
+FILE* fpLedsOutput;
 
 void initLeds(char* outputFileName)
 {
-    fpOutput = fopen(outputFileName, "w");
-    if (!fpOutput)
+    fpLedsOutput = fopen(outputFileName, "w");
+    if (!fpLedsOutput)
     {
         printf("error opening output file for leds with name: %s", outputFileName);
         exit(1);
@@ -34,7 +34,7 @@ int writeLeds(int address, int value)
     if (address == IO_LEDS)
     {
         leds = value;
-        fprintf(fpOutput, "%u %08X\n", clock, leds);
+        fprintf(fpLedsOutput, "%u %08x\n", clock, leds);
         return leds;
     }
     else
@@ -47,5 +47,5 @@ int writeLeds(int address, int value)
 
 void exitLeds()
 {
-    fclose(fpOutput);
+    fclose(fpLedsOutput);
 }

@@ -9,20 +9,10 @@
 
 char* IORegistersName[] = {"irq0enable", "irq1enable", "irq2enable", "irq0status", "irq1status", "irq2status", "irqhandler", "irqreturn", "clks", "leds", "display7seg", "timerenable", "timercurrent", "timermax", "diskcmd","disksector", "diskbuffer", "diskstatus", "reserved","reserved", "monitoraddr", "monitordata", "monitorcmd"};
 
+static int32_t reserved1 = 0, reserved2 = 0;
 
-//TODO: DELETE
-void printInstruction(int* instruction);
-
-void writeHwtraceOutput(FILE * hwF, int instT, int regNum, int data); //TODO add to header file?
-
-
-
-int executeInstruction(int* registers, int* instruction, int* pc, FILE * hwtraceF, int* handlingInterupt)
+void setImmRegisters(int* registers, int* instruction)
 {
-    int opCode;
-    int rdVal, rsVal, rtVal, rmVal;
-
-
     if (instruction[imm1Index] & 0x00000800)
     {
         registers[1] = instruction[imm1Index] | 0xFFFFF000; //2's complement - handle negative
@@ -40,6 +30,14 @@ int executeInstruction(int* registers, int* instruction, int* pc, FILE * hwtrace
     {
         registers[2] = instruction[imm2Index];
     }
+}
+
+
+int executeInstruction(int* registers, int* instruction, int* pc, FILE * hwtraceF, int* handlingInterupt)
+{
+    int opCode;
+    int rdVal, rsVal, rtVal, rmVal;
+
 
 
     rdVal = registers[instruction[rdIndex]];
@@ -48,12 +46,7 @@ int executeInstruction(int* registers, int* instruction, int* pc, FILE * hwtrace
     rmVal = registers[instruction[rmIndex]];
 
     opCode = instruction[0];
-    //TODO: delete
-    if (opCode == 0)
-    {
-        int sddf = 0;
-    }
-    //printInstruction(instruction);
+
     // execute arithmetic operation
     if (0 <= opCode && opCode <= 8)
     {
@@ -84,24 +77,24 @@ int executeInstruction(int* registers, int* instruction, int* pc, FILE * hwtrace
                 *pc = rmVal & 0xFFF;
                 break;
             case 16:
-                registers[instruction[rdIndex]] = execLw(rsVal, rtVal, rmVal); // TODO: implement on memory
+                registers[instruction[rdIndex]] = execLw(rsVal, rtVal, rmVal);
                 *pc = *pc + 1;
                 break;
             case 17:
-                execSw(rdVal, rsVal, rtVal, rmVal); // TODO: implement on memory
+                execSw(rdVal, rsVal, rtVal, rmVal);
                 *pc = *pc + 1;
                 break;
             case 18:
-                *pc = getIoRegister(IO_IRQ_RETURN); // TODO: implement on IO module or add implementation here and send directly to modules?
+                *pc = getIoRegister(IO_IRQ_RETURN);
                 *handlingInterupt = 0;
                 break;
             case 19:
-                registers[instruction[rdIndex]] = getIoRegister(rsVal + rtVal); // TODO: implement function 
+                registers[instruction[rdIndex]] = getIoRegister(rsVal + rtVal);
                 *pc = *pc + 1;
                 writeHwtraceOutput(hwtraceF, 19, rsVal + rtVal, registers[instruction[rdIndex]]);
                 break;
             case 20:
-                setIoRegister(rsVal + rtVal, rmVal); // TODO: implement function 
+                setIoRegister(rsVal + rtVal, rmVal);
                 *pc = *pc + 1;
                 writeHwtraceOutput(hwtraceF, 20, rsVal + rtVal, rmVal);
                 break;
@@ -233,7 +226,7 @@ int getIoRegister(int address)
         case IO_IRQ_STATUS_2:
         case IO_IRQ_HANDLER:
         case IO_IRQ_RETURN:
-            //return  readinterrupts(address);
+            return  readInterrupts(address);
             break;
         case IO_CLKS:
         case IO_TIMER_ENABLE:
@@ -254,8 +247,10 @@ int getIoRegister(int address)
             return readDisk(address);
             break;
         case IO_RESERVED1:
+            return reserved1;
+            break;
         case IO_RESERVED2:
-            //return readReserved(address); //TODO
+            return reserved2;
             break;
         case IO_MONITOR_ADDR:
         case IO_MONITOR_DATA:
@@ -303,8 +298,12 @@ int setIoRegister(int address, int value)
             return writeDisk(address, value);
             break;
         case IO_RESERVED1:
+            reserved1 = value;
+            return reserved1;
+            break;
         case IO_RESERVED2:
-            //return writeReserved(address, value); //TODO
+            reserved2 = value;
+            return reserved2;
             break;
         case IO_MONITOR_ADDR:
         case IO_MONITOR_DATA:
@@ -316,10 +315,4 @@ int setIoRegister(int address, int value)
             exit(1);
             break;
     }
-}
-
-void printInstruction(int* instruction)
-{
-    int* ins = instruction;
-    printf("%d rd=%d, rs=%d, rt=%d, rm=%d, imm1=%d, imm2=%d\n", ins[0], ins[1], ins[2], ins[3], ins[4], ins[5], ins[6]);
 }

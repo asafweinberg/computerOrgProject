@@ -3,12 +3,14 @@
 #define MEMORY_LINE_LEN 10
 
 #include <math.h>
+#include <ctype.h>
 #include "modules.h"
+#include <stdint.h>
 
 int findMemLastIndex();
 
 
-static int memory[memorySize];
+static int32_t memory[memorySize];
 static char* dmemoutAddress;
 
 
@@ -17,7 +19,6 @@ void initMemory(char* dmemin, char* dmemout)
     char line[MEMORY_LINE_LEN];
     int counter = 0;
     int i;
-    char* ptr;
 
 
     FILE* memFile = fopen(dmemin, "r");
@@ -30,7 +31,7 @@ void initMemory(char* dmemin, char* dmemout)
     while (fgets(line, MEMORY_LINE_LEN, memFile))
     {
         line[8] = '\0';
-        int decVal = (int)strtol(line, &ptr, 16);
+        int32_t decVal = strtoll(line, NULL, 16);
         memory[counter] = decVal;
         counter++;
     }
@@ -47,15 +48,17 @@ void initMemory(char* dmemin, char* dmemout)
 
 int readMemory(int address) {
     if (address >= memorySize || address < 0) {
-        printf("error in readMemory with address number: %i", address);
-        exit(1);
+        //printf("error in readMemory with address number: %i", address);
+        //exit(1);
+        return; // TODO: think what to do, the requirements are not to exit
     }
     return memory[address];
 }
-void writeMemory(int address, int value) {
+void writeMemory(int address, int32_t value) {
     if (address >= memorySize || address < 0) {
-        printf("error in writeMemory with address number: %i", address);
-        exit(1);
+        //printf("error in writeMemory with address number: %i", address);
+        //exit(1);
+        return; // TODO: think what to do, the requirements are not to exit
     }
     memory[address] = value;
 }
@@ -70,15 +73,10 @@ void exitMemory() {
         printf("error in exitMemory in writing to dmemout: %s\n", dmemoutAddress);
         exit(1);
     }
-    for (i = 0; i < lastIndex; i++) {
-        if (lastIndex == 0) {
-            fprintf(dmemoutFile, "%08X\n", memory[i]);
-            break;
-        }
+    for (i = 0; i <= lastIndex; i++) {
         fprintf(dmemoutFile, "%08X\n", memory[i]);
     }
     fclose(dmemoutFile);
-    //free(memory);
 }
 
 int findMemLastIndex() {
