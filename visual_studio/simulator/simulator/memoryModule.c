@@ -49,14 +49,15 @@ void initMemory(char* dmemin, char* dmemout)
 
 int readMemory(int address) {
     if (address >= memorySize || address < 0) {
-        printf("error in readMemory with address number: %i", address);
-        exit(1);
+        //printf("error in readMemory with address number: %i", address);
+        //exit(1);
+        return; // TODO: think what to do, the requirements are not to exit
     }
     return memory[address];
 }
 void writeMemory(int address, int value) {
     if (address >= memorySize || address < 0) {
-        printf("error in writeMemory with address number: %i", address);
+        //printf("error in writeMemory with address number: %i", address);
         //exit(1);
         return; // TODO: think what to do, the requirements are not to exit
     }
