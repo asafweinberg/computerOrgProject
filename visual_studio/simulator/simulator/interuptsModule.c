@@ -14,10 +14,11 @@ static int irq;
 static int irq2Num;
 static int currentIrq2Index;
 static long* irq2Listings;
+static int isInMiddleOfIrq;
 
 //every clock cycle
 
-void initInterupts(char* irq2in) {
+void initInterrupts(char* irq2in) {
     char line[MAX_LINE_LEN+1];
     int counter = 0;
     char* ptr;
@@ -32,6 +33,7 @@ void initInterupts(char* irq2in) {
     irqreturn = 0;
     irq = 0;
     currentIrq2Index = 0;
+    isInMiddleOfIrq = 0;
 
     FILE* irq2File = fopen(irq2in, "r");
     if (!irq2File)
@@ -133,7 +135,7 @@ int writeInterrupts(int address, int value)
 }
 
 
-int checkinterruption()
+int checkinterruption(int pc, int currHandIrq)
 {
     //get irq
     //irq==1 iff there is an interruption
@@ -145,7 +147,7 @@ int checkinterruption()
         // we are done reading irq2 from input file
         irq2status = 0;
     }
-    else if (irq2Listings[currentIrq2Index] == getClockCycles()) {
+    if (irq2Listings[currentIrq2Index] == getClockCycles() - 1) {
         irq2status = 1;
         currentIrq2Index++;
     }
@@ -154,7 +156,26 @@ int checkinterruption()
     }
     irq0status = hasinterrupt0();
     irq1status = hasinterrupt1();
-    irq = (irq0enable && irq0status) || (irq1enable && irq1status) || (irq2enable && irq2status);
+    if (!currHandIrq) {
+        if (isInMiddleOfIrq) {
+            irq = isInMiddleOfIrq;
+        }
+        else {
+            irq = (irq0enable && irq0status) || (irq1enable && irq1status) || (irq2enable && irq2status);
+            //update irq
+        }
+    }
+    else {
+        irq = 0;
+        isInMiddleOfIrq = (irq0enable && irq0status) || (irq1enable && irq1status) || (irq2enable && irq2status);
+    }
+    
+
+    if (irq)
+    {
+        irqreturn = pc;
+    }
+
     if (irq1status) {
         turnOffInterrupt1();
     }
