@@ -56,7 +56,7 @@ int executeInstruction(int* registers, int* instruction, int* pc, FILE * hwtrace
         registers[instruction[rdIndex]] = execArithmetic(opCode, rsVal, rtVal, rmVal);
         *pc = *pc + 1;
     }
-    else if (9 <= opCode && opCode <= 13)
+    else if (9 <= opCode && opCode <= 14)
     {
         // TODO: check instructions defintitions in pdf: "[low bits 11:0]"?
         if (execBranch(opCode, rsVal, rtVal))
@@ -103,9 +103,6 @@ int executeInstruction(int* registers, int* instruction, int* pc, FILE * hwtrace
                 break;
 
             default:
-                printf("error: opcode does not exists\n");
-                printf("on pc = %d, opcode = %d\n", *pc, opCode);
-                exit(1);
                 break;
         }
     }
@@ -126,7 +123,7 @@ void writeHwtraceOutput(FILE * hwF, int instT, int regNum, int data)
 	    fprintf(hwF, "WRITE ");
     }
     fprintf(hwF, "%s ", IORegistersName[regNum]);
-    fprintf(hwF, "%08X\n", data); //TODO CHECK IT
+    fprintf(hwF, "%08x\n", data);
 }
 
 
@@ -164,8 +161,6 @@ int execArithmetic(int opCode, int rsVal, int rtVal, int rmVal)
             break;
 
         default:
-            printf("error in execBranch");
-            exit(1);
             break;
     }
 }
@@ -193,8 +188,6 @@ int execBranch(int opCode, int rsVal, int rtVal)
             return rsVal >= rtVal;
             break;
         default:
-            printf("error in execBranch");
-            exit(1);
             break;
     }
 }
@@ -258,8 +251,6 @@ int getIoRegister(int address)
             return readMonitor(address);
             break;
         default:
-            printf("error on getIoRegister, requested address is %d", address);
-            exit(1);
             break;
     }
 }
@@ -311,8 +302,6 @@ int setIoRegister(int address, int value)
             return writeMonitor(address, value);
             break;
         default:
-            printf("error on setIoRegister, requested address is %d, value is: %d", address, value);
-            exit(1);
             break;
     }
 }

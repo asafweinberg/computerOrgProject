@@ -22,8 +22,6 @@ int readDisplay(int address)
     }
     else
     {
-        printf("error read display with register address: %d", address);
-        exit(1);
         return -1;
     }
 }
@@ -38,8 +36,6 @@ int writeDisplay(int address, int value)
     }
     else
     {
-        printf("error write display with register address: %d", address);
-        exit(1);
         return -1;
     }
 }

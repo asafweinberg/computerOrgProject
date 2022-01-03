@@ -112,7 +112,6 @@ int updateClock()
         {
             if (timercurrent == 0)
             {
-                // TODO: check if needs to stay 1 for the future if the cpu is busy.
                 interrupt0 = 0;
             }
             timercurrent++;

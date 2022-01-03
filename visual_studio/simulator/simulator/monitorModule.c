@@ -70,16 +70,15 @@ void writePixel(int value)
 {
     if(value == 1)
     {
-    int row, col;
-    row = monitoraddr / MONITOR_LEN;
-    col = monitoraddr % MONITOR_LEN;
-    if (row < 0 || col < 0 || row > MONITOR_LEN || col > MONITOR_LEN)
-    {
-        printf("error in getPixelData in readMonitor, row = %d, col = %d", row, col);
-        exit(1);
-    }
+        int row, col;
+        row = monitoraddr / MONITOR_LEN;
+        col = monitoraddr % MONITOR_LEN;
+        if (row < 0 || col < 0 || row > MONITOR_LEN || col > MONITOR_LEN)
+        {
+            return;
+        }
     
-    monitorBuffer[monitoraddr / MONITOR_LEN][monitoraddr % MONITOR_LEN] = (unsigned char) monitordata;
+        monitorBuffer[monitoraddr / MONITOR_LEN][monitoraddr % MONITOR_LEN] = (unsigned char) monitordata;
     }
     
 }

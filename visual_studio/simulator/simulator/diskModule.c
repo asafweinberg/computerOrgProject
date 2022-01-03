@@ -131,7 +131,6 @@ void executeDisk(int actionType)
     switch(actionType)
     {
         case 0:
-            //TODO: check what to to here
             break;
         case 1:
             readSector();
@@ -141,8 +140,7 @@ void executeDisk(int actionType)
             writeSector();
             interrupt1 = 1;
             break;
-    }
-    //TODO: ask whether call to writeInterrupts could be made here instead of inside cases
+    } 
 }
 
 void readSector()

@@ -43,7 +43,6 @@ void initInterrupts(char* irq2in) {
     }
 
     //initiate irq2 array
-    //TODO: check how to write it more smoothly with reallocation
     irq2Listings = (long*)calloc(1, sizeof(long));
     if (!irq2Listings)
     {
@@ -52,10 +51,13 @@ void initInterrupts(char* irq2in) {
     }
     while(fgets(line, MAX_LINE_LEN + 1, irq2File))
     {
-        irq2Listings = (long*)realloc(irq2Listings, (counter + 1) * sizeof(long));
-        if (!irq2Listings) {
-            printf("error in allocating memory\n");
-            exit(1);
+        if (counter)
+        {
+            irq2Listings = (long*)realloc(irq2Listings, (counter + 1) * sizeof(long));
+            if (!irq2Listings) {
+                printf("error in allocating memory\n");
+                exit(1);
+            }
         }
         int decVal = (int) strtol(line, &ptr, 10);
         irq2Listings[counter] = decVal;
@@ -141,13 +143,11 @@ int checkinterruption(int pc, int currHandIrq)
     //irq==1 iff there is an interruption
     //check int0
     //check int1 - no need to do since irq1status is updated directly with writeInterrupts in diskModule
-    //TODO: make sure it's clock cycles or IO_CLOCKS_REGISTER, and check if we should repeat - if so, change index
-    //TODO: implement multiple interrupts handling
     if (currentIrq2Index == irq2Num) {
         // we are done reading irq2 from input file
         irq2status = 0;
     }
-    if (irq2Listings[currentIrq2Index] == getClockCycles() - 1) {
+    if (irq2Listings[currentIrq2Index] == getIoRegister(IO_CLKS) - 1) {
         irq2status = 1;
         currentIrq2Index++;
     }

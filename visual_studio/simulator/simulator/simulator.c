@@ -13,7 +13,7 @@ char * hwregtraceFile;
 
 int main(int argc, char* argv[])
 {
-    int pc, handlingInterupt = 0;
+    int pc, handlingInterupt = 0, success;
     pc = 0;
 
     initialization(argc, argv);
@@ -21,13 +21,8 @@ int main(int argc, char* argv[])
     FILE* traceF = fopen(traceFile,"w");
     FILE* hwtraceF = fopen(hwregtraceFile,"w");
 
-    while (pc < instructions->length) // todo: check condition
+    while (true)
     {
-        if (getClockCycles() == 111) //TODO: Delete
-        {
-            debug = 1;
-        }
-
         diskUpdate();
         if (checkinterruption(pc,handlingInterupt))
         {
@@ -37,14 +32,17 @@ int main(int argc, char* argv[])
 
         setImmRegisters(registers, instructions->instructionArr[pc]);
         writeTraceOutput(pc, traceF);
-
-        if (!executeInstruction(registers, instructions->instructionArr[pc], &pc, hwtraceF, &handlingInterupt))
+        if (pc < instructions->length)
         {
-            exitSimulator();
-            fclose(traceF);
-            fclose(hwtraceF);  
-            break;
+            if (!executeInstruction(registers, instructions->instructionArr[pc], &pc, hwtraceF, &handlingInterupt))
+            {
+                exitSimulator();
+                fclose(traceF);
+                fclose(hwtraceF);
+                break;
+            }
         }
+
         
         updateClock();
     }
@@ -124,15 +122,13 @@ void initInstructions(char* fileName)
     }
 
     instructions-> instructionArr = (int**)calloc(instructions->length, sizeof(int*));
-    
-
     if (!instructions->instructionArr)
     {
         printf("error allocating memory instructions in simulator init and cant recover");
         exit(1);
     }
+
     instructions-> originalInst = (char**)calloc(instructions->length, sizeof(char*));
-    
     if (!instructions->originalInst)
     {
         printf("error allocating memory instructions in simulator init and cant recover");
@@ -209,24 +205,6 @@ int initialization(int argc, char* argv[])
         registers[i] = 0;
     }
 
-    // if (argc != 15)
-    // {
-    //     printf("error: got %d arguments instead of 14", argc-1);
-    //     exit(1);
-    // }
-    if (debug)
-    {
-        imemin = argv[1];
-        regout = "";
-        trace = "";
-        hwregtrace = "";
-    }
-    else
-    {
-        regout = "";
-        trace = "";
-        hwregtrace = "";
-    }
     imemin = argv[1];
     dmemin = argv[2];
     diskin = argv[3];
@@ -250,8 +228,6 @@ int initialization(int argc, char* argv[])
     initLeds(leds);
     initDisplay(display7seg);
     initMonitor(monitor, monitorYuv);
-
-    return true; //TODO: check return value when error
 }
 
 void exitSimulator()
