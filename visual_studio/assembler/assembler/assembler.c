@@ -26,7 +26,7 @@ typedef struct
 }labelAddress;
 
 labelAddress labelAddressTable[MAX_INSTRUCTIONS_COUNT];
-char commandParts[7][100] = { "","","","","","","" }; // TODO change to less than 100 maybe
+char commandParts[7][100] = { "","","","","","","" }; 
 
 int dataMemory[MAX_DATA_MEMORY_LEN];
 
@@ -44,7 +44,6 @@ int isDataCommand(char* line);
 void passOne(char* fileName);
 void passTwo(char* progInst, char* instMem, char* dataMem);
 
-// void printlabelAddressTable();
 
 // main runs pass1 then pass2
 int main(int argc, char* argv[])
@@ -65,7 +64,7 @@ int main(int argc, char* argv[])
     }
 }
 
-// the function gets a line and removes characters after '#' (include '#').
+// The function gets a line and removes characters after '#' (include '#').
 void removeComments(char* line)
 {
     char* pos;
@@ -81,7 +80,7 @@ void removeComments(char* line)
 //         line[i] = tolower(line[i]);
 // }
 
-//if the command is of ".word" type the function replaces the command with empty line
+// If the command is of ".word" type the function replaces the command with empty line.
 void skipDataInst(char* line)
 {
     char* pos;
@@ -90,7 +89,7 @@ void skipDataInst(char* line)
         (*pos) = 0;
 }
 
-// the function return true if the line is empty and false otherwise
+// The function return true if the line is empty and false otherwise
 int emptyLine(char* line)
 {
     if (line[0] == 0)
@@ -100,7 +99,7 @@ int emptyLine(char* line)
     return false;
 }
 
-// the function deletes white spaces - tab white space and enter from the line
+// The function deletes white spaces - tab white space and enter from the line
 void deleteWhiteSpaces(char* line)
 {
     int i = 0, j = 0;
@@ -256,13 +255,13 @@ void encodeCommand(char* encodedLine)
     sprintf(encodedLine, "%012llX\n", codeNum);
 }
 
-//The function return true if the line is from type ".word"
+// The function return true if the line is from type ".word"
 int isDataCommand(char* line)
 {
     return(strchr(line, '.') != NULL);
 }
 
-//The function writes to dataMemory array according to the values of the ".word" command.
+// The function writes to dataMemory array according to the values of the ".word" command.
 void handleDataCommand(char* line)
 {
     char* sep = " \t";
