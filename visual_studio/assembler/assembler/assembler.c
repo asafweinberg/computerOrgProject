@@ -46,7 +46,7 @@ void passTwo(char* progInst, char* instMem, char* dataMem);
 
 // void printlabelAddressTable();
 
-
+// main runs pass1 then pass2
 int main(int argc, char* argv[])
 {
     char* progInst = argv[1];  //program.asm
@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
     }
 }
 
-
+// the function gets a line and removes characters after '#' (include '#').
 void removeComments(char* line)
 {
     char* pos;
@@ -74,13 +74,14 @@ void removeComments(char* line)
         (*pos) = 0;
 }
 
-void changeToLowerCase(char* line)
-{
-    int i;
-    for (i = 0; line[i]; i++)
-        line[i] = tolower(line[i]);
-}
+// void changeToLowerCase(char* line)
+// {
+//     int i;
+//     for (i = 0; line[i]; i++)
+//         line[i] = tolower(line[i]);
+// }
 
+//if the command is of ".word" type the function replaces the command with empty line
 void skipDataInst(char* line)
 {
     char* pos;
@@ -89,15 +90,7 @@ void skipDataInst(char* line)
         (*pos) = 0;
 }
 
-// int emptyLine(char* line)
-// {
-//     int i;
-//     for (i=0; line[i]; i++)
-//         if(line[i] != ' ' && line[i] != '\t' && line[i] != '\n') 
-//         	return(false);	 
-// 	return(true);			
-// }
-
+// the function return true if the line is empty and false otherwise
 int emptyLine(char* line)
 {
     if (line[0] == 0)
@@ -107,6 +100,7 @@ int emptyLine(char* line)
     return false;
 }
 
+// the function deletes white spaces - tab white space and enter from the line
 void deleteWhiteSpaces(char* line)
 {
     int i = 0, j = 0;
@@ -120,30 +114,15 @@ void deleteWhiteSpaces(char* line)
 
 }
 
-// void sliceLabelCommand(char * line , char ** labelStr, char ** commStr)
-// {
-//     if
-//     for (in i=0 ; i < line.lenght() ; i++)
-//     {
-//         if (line.charAt(i)==':')
-//         {
-
-//         }
-//     }
-// }
-
+// The function gets the pure command string without labels, and place the correct parts of the command in "commandParts" array.
 void breakCommand(char* command)
 {
     char* sep = ",", * registers, * typeCommand;
     int i = 1;
-    // char* command;
     char commandDestroy[MAX_LINE_LEN + 1];
     strcpy(commandDestroy, command);
-    // printf("with dots: %s\n",commandWithDots);
 
     // strcpy(command, commandWithDots+1); //without ':'
-
-    // printf("no dots: %s\n",command);
 
     registers = strchr(command, '$');
     typeCommand = strtok(commandDestroy, "$");
@@ -151,8 +130,6 @@ void breakCommand(char* command)
     strcpy(commandParts[0], typeCommand);
     char* token = strtok(registers, sep);
 
-    // Keep printing tokens while one of the 
-    // delimiters present in str[]. 
     while (token != NULL)
     {
         strcpy(commandParts[i], token);
@@ -162,11 +139,11 @@ void breakCommand(char* command)
     return;
 }
 
+// The function gets a line, returns true if the line had a command in it. If the command also had a label, it puts the label in potenLabel. if pass == 2 and there was a command, it also breaks it into parts.
 int handleInstr(char* line, char** potenLabel, int pass) //3 cases as we described
 {
     *potenLabel = "";
-    char* afterLabel; //* potenCommand;
-    // char noDots[MAX_LINE_LEN+1];
+    char* afterLabel;
     char* noDots;
     char destroyLine[MAX_LINE_LEN + 1];
     strcpy(destroyLine, line);
@@ -174,13 +151,10 @@ int handleInstr(char* line, char** potenLabel, int pass) //3 cases as we describ
 
     afterLabel = strchr(line, ':');
     noDots = afterLabel + 1;
-    // printf("%s",newcheck);
 
     // *potenLabel= strtok(line, ":");
     // potenCommand= strtok(NULL, ":");
 
-    // printf("afterlabel string: %s\n",afterLabel);
-    // printf("potenCommand string: %s\n",potenCommand);
 
     if (afterLabel != NULL)  //there is a label - so now only label or both
     {
@@ -213,6 +187,7 @@ int handleInstr(char* line, char** potenLabel, int pass) //3 cases as we describ
     }
 }
 
+// The function gets an opcode string and returns the position of the opcode in opcodeTable.
 int opcodeNum(char* opcode)
 {
     for (int i = 0; i < 22; i++)
@@ -223,6 +198,7 @@ int opcodeNum(char* opcode)
     return (0);
 }
 
+// The function gets an register string and returns the position of the register in registerTable.
 int registerNum(char* reg)
 {
     for (int i = 0; i < 16; i++)
@@ -232,6 +208,7 @@ int registerNum(char* reg)
     }
 }
 
+// The function gets a label string and returns the adress that represents the label. 
 int getLabelAddress(char* label)
 {
     for (int i = 0; i < labelCount; i++)
@@ -240,10 +217,10 @@ int getLabelAddress(char* label)
 
 }
 
+// The function generates the hexa encoded line according to the values of the command in commandParts array.
 void encodeCommand(char* encodedLine)
 {
-    long long opcode, rd, rs, rt, rm, imm1, imm2; //TODO check if one long is enough
-    // short imm1, imm2;
+    long long opcode, rd, rs, rt, rm, imm1, imm2; 
     long long codeNum;
 
     opcode = opcodeNum(commandParts[0]);
@@ -275,21 +252,21 @@ void encodeCommand(char* encodedLine)
     }
 
     codeNum = (opcode << 40) | (rd << 36) | (rs << 32) | (rt << 28) | (rm << 24) | (imm1 << 12) | (imm2);
-    // codeNum = codeNum | (imm1<<12) | (imm2);
 
     sprintf(encodedLine, "%012llX\n", codeNum);
 }
 
+//The function return true if the line is from type ".word"
 int isDataCommand(char* line)
 {
     return(strchr(line, '.') != NULL);
 }
 
+//The function writes to dataMemory array according to the values of the ".word" command.
 void handleDataCommand(char* line)
 {
     char* sep = " \t";
 
-    // Returns first token 
     strtok(line, sep);
     char* address = strtok(NULL, sep);
     char* data = strtok(NULL, sep);
@@ -299,9 +276,9 @@ void handleDataCommand(char* line)
     if (currentAdd > maxDataAdress)
         maxDataAdress = currentAdd;
 
-
 }
 
+// The function emulates the first pass on the asm file, and creates a mapping between labels and their addresses in the code. 
 void passOne(char* fileName)
 {
     int i, PC = 0, containsCommand;
@@ -311,14 +288,11 @@ void passOne(char* fileName)
 
     while (fgets(line, MAX_LINE_LEN + 1, instFile))
     {
-        // potenLabel="";
 
         removeComments(line);
         skipDataInst(line);
-        // changeToLowerCase(line); //TODO: check about it if there are difference in the label between lower and uper
         deleteWhiteSpaces(line);
 
-        // printf("%s\n",line);
 
         if (emptyLine(line))
             continue;
@@ -333,7 +307,7 @@ void passOne(char* fileName)
 
         else
         {
-            strcpy(labelAddressTable[labelCount].label, potenLabel); //TODO check with garibi about doubled label
+            strcpy(labelAddressTable[labelCount].label, potenLabel); 
             labelAddressTable[labelCount].address = PC;
             labelCount++;
             if (containsCommand) //label+command
@@ -343,14 +317,15 @@ void passOne(char* fileName)
         }
     }
     fclose(instFile);
-    // printlabelAddressTable(); 
 
 }
+
+// The function emulates the seccond pass on the asm file and encodes the commands into their hexa representation in imemin file.
 void passTwo(char* progInst, char* instMem, char* dataMem)
 {
-    char line[MAX_LINE_LEN + 1]; //TODO: check exactly how many
+    char line[MAX_LINE_LEN + 1]; 
     char originalLine[MAX_LINE_LEN + 1];
-    char* potenLabel, encodedLine[100]; //CHECK EXACTLY
+    char* potenLabel, encodedLine[100]; 
     int containsCommand, i;
     FILE* progFile = fopen(progInst, "r");
     FILE* instFile = fopen(instMem, "w");
@@ -390,10 +365,3 @@ void passTwo(char* progInst, char* instMem, char* dataMem)
     fclose(dataFile);
 }
 
-// void printlabelAddressTable()
-// {
-//     for(int i=0 ; i<labelCount ; i++)
-//     {
-//         printf("label: %s addr: %d \n", labelAddressTable[i].label, labelAddressTable[i].address);
-//     }
-// }

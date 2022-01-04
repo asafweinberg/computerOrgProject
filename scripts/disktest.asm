@@ -8,7 +8,7 @@ LOOP:                                       # s0 goes from 7 to 0
     out $zero, $imm1 , $zero, $s0, 15, 0    # disksector = s0
     out $zero, $imm1, $zero, $zero, 16, 0   # diskbuffer = MEM[0]
     out $zero, $imm1, $zero, $imm2, 14, 1   # diskcmd = read -> sector s0 is read to MEM[0]
-    out $zero, $imm1, $zero, $imm2, 14, 0   # TODO MAYBE NOT NEED - diskcmd = 0 no command
+    out $zero, $imm1, $zero, $imm2, 14, 0   # diskcmd = 0 no command
 
     LOOP2:                                  # loop until diskstatus = 0
         in $s1, $imm1, $zero, $zero, 17, 0      # s1 = diskstatus
@@ -18,7 +18,7 @@ LOOP:                                       # s0 goes from 7 to 0
     out $zero, $imm1 , $zero, $s1, 15, 0    # disksector = s1 = s0+1
     out $zero, $imm1, $zero, $zero, 16, 0   # diskbuffer = MEM[0]
     out $zero, $imm1, $zero, $imm2, 14, 2   # diskcmd = write -> write MEM[0] to sector s1
-    out $zero, $imm1, $zero, $imm2, 14, 0   # TODO MAYBE NOT NEED - diskcmd = 0 no command
+    out $zero, $imm1, $zero, $imm2, 14, 0   # diskcmd = 0 no command
 
     LOOP3:                                  # loop until diskstatus = 0
         in $s1, $imm1, $zero, $zero, 17, 0      # s1 = diskstatus
