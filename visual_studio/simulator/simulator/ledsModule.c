@@ -14,6 +14,7 @@ void initLeds(char* outputFileName)
     leds = 0;
 }
 
+//reading the leds registers
 int readLeds(int address)
 {
     if (address == IO_LEDS)
@@ -26,6 +27,7 @@ int readLeds(int address)
     }
 }
 
+//writing to the leds registers
 int writeLeds(int address, int value)
 {
     unsigned int clock = readClock(IO_CLKS);

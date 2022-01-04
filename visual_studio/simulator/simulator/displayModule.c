@@ -14,6 +14,7 @@ void initDisplay(char* outputFileName)
     display = 0;
 }
 
+//reading the display registers
 int readDisplay(int address)
 {
     if (address == IO_DISPLAY_7_SEG)
@@ -26,6 +27,7 @@ int readDisplay(int address)
     }
 }
 
+//writing to the display registers
 int writeDisplay(int address, int value)
 {
     unsigned int clock = readClock(IO_CLKS);

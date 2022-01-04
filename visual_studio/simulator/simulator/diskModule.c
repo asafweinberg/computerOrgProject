@@ -58,11 +58,10 @@ void initDisk(char* diskin, char* diskout)
 void diskUpdate()
 {
     currentClock = getClockCycles();
-    if (currentClock == lastClockStamp + 1025) //TODO check if 1023
+    if (currentClock == lastClockStamp + 1025) 
     {
         executeDisk(diskcmd);
         diskstatus = 0; //free to get more instructions
-        printf("%d\n", currentClock);
     }
     // diskstatus = 0; //free to get more instructions
     // diskcmd = 0;
@@ -101,10 +100,8 @@ int writeDisk(int address, int value)
             if (!diskstatus) {
                 diskcmd = value;
                 if (address != 0) {
-                    diskstatus = 1;
+                    diskstatus = 1; 
                     lastClockStamp = getClockCycles();
-                    printf("stamp: %d\n", lastClockStamp);
-
                 }
             }
             break;

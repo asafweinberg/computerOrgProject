@@ -24,6 +24,7 @@ void initMonitor(char* monitor, char* monitorYuv)
 }
 
 
+//reading the monitor registers
 int readMonitor(int address)
 {
     switch (address)
@@ -45,6 +46,7 @@ int readMonitor(int address)
 }
 
 
+//writing to the monitor registers
 int writeMonitor(int address, int value)
 {
     switch (address)
@@ -65,7 +67,7 @@ int writeMonitor(int address, int value)
     return -1;
 }
 
-
+// executing a write to MONITOR_CMD register
 void writePixel(int value)
 {
     if(value == 1)
@@ -83,7 +85,7 @@ void writePixel(int value)
     
 }
 
-
+// printing output files of the monitor
 void exitMonitor()
 {
     FILE* monitorFile = fopen(ouputTxt,"w");

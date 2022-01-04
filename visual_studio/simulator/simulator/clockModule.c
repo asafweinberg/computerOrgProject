@@ -19,7 +19,7 @@ void initClock(char* cycles)
     clockOutputFileName = cycles;
 }
 
-
+//reading the clocks registers
 int readClock(int address)
 {
     switch (address)
@@ -44,6 +44,7 @@ int readClock(int address)
     return -1;
 }
 
+//writing to the clocks registers
 int writeClock(int address, int value)
 {
     switch (address)
@@ -56,11 +57,6 @@ int writeClock(int address, int value)
         break;
     case IO_TIMER_ENABLE:
         timerEnabled = value;
-        if (value != 0 && value != 1)
-        {
-            //todo
-            printf("error on write clock, needs to check how to approach to timerEnable not boolean, given value = %d", timerEnabled);
-        }
         break;
     case IO_TIMER_MAX:
         timerMax = value;
@@ -101,7 +97,7 @@ int updateClock()
     }
     clockCycles++;
 
-
+    //handling irq0
     if (timerEnabled)
     {
         if (timercurrent == timerMax-1)

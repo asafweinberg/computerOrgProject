@@ -39,7 +39,6 @@ int executeInstruction(int* registers, int* instruction, int* pc, FILE * hwtrace
     int rdVal, rsVal, rtVal, rmVal;
 
 
-
     rdVal = registers[instruction[rdIndex]];
     rsVal = registers[instruction[rsIndex]];
     rtVal = registers[instruction[rtIndex]];
@@ -56,9 +55,8 @@ int executeInstruction(int* registers, int* instruction, int* pc, FILE * hwtrace
         registers[instruction[rdIndex]] = execArithmetic(opCode, rsVal, rtVal, rmVal);
         *pc = *pc + 1;
     }
-    else if (9 <= opCode && opCode <= 14)
+    else if (9 <= opCode && opCode <= 14) // executing branch instruction
     {
-        // TODO: check instructions defintitions in pdf: "[low bits 11:0]"?
         if (execBranch(opCode, rsVal, rtVal))
         {
             *pc = rmVal & 0xFFF;
@@ -72,32 +70,39 @@ int executeInstruction(int* registers, int* instruction, int* pc, FILE * hwtrace
     {
         switch (instruction[0])
         {
+            // jal
             case 15:
                 registers[instruction[rdIndex]] = *pc + 1;
                 *pc = rmVal & 0xFFF;
                 break;
+            //lw
             case 16:
                 registers[instruction[rdIndex]] = execLw(rsVal, rtVal, rmVal);
                 *pc = *pc + 1;
                 break;
+            //sw
             case 17:
                 execSw(rdVal, rsVal, rtVal, rmVal);
                 *pc = *pc + 1;
                 break;
+            // reti
             case 18:
                 *pc = getIoRegister(IO_IRQ_RETURN);
                 *handlingInterupt = 0;
                 break;
+            // in
             case 19:
                 registers[instruction[rdIndex]] = getIoRegister(rsVal + rtVal);
                 *pc = *pc + 1;
                 writeHwtraceOutput(hwtraceF, 19, rsVal + rtVal, registers[instruction[rdIndex]]);
                 break;
+            // out
             case 20:
                 setIoRegister(rsVal + rtVal, rmVal);
                 *pc = *pc + 1;
                 writeHwtraceOutput(hwtraceF, 20, rsVal + rtVal, rmVal);
                 break;
+            // halt
             case 21:
                 return false;
                 break;

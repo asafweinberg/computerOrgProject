@@ -16,26 +16,32 @@ int main(int argc, char* argv[])
     int pc, handlingInterupt = 0, success;
     pc = 0;
 
+    // reading instructions and other input files and initializing all the data structs
     initialization(argc, argv);
-    //printInstructions();
     FILE* traceF = fopen(traceFile,"w");
     FILE* hwtraceF = fopen(hwregtraceFile,"w");
 
+    //main loop of the simulator
     while (true)
     {
+        //updating the disk status
         diskUpdate();
+        //checking if any interuption occures in the current clock cycle
         if (checkinterruption(pc,handlingInterupt))
         {
+            //if an interruption occures, the pc is changed to the irqhandler register
             pc = getIoRegister(IO_IRQ_HANDLER);
             handlingInterupt = 1;
         }
-
+        // setting the imm registers before commiting the instruction
         setImmRegisters(registers, instructions->instructionArr[pc]);
+        // writing to trace tput file
         writeTraceOutput(pc, traceF);
-        if (pc < instructions->length)
+        if (pc < instructions->length) // if the pc is legal
         {
             if (!executeInstruction(registers, instructions->instructionArr[pc], &pc, hwtraceF, &handlingInterupt))
             {
+                // we get here if executeInstruction returns false, only happens if the operation is HALT
                 exitSimulator();
                 fclose(traceF);
                 fclose(hwtraceF);
@@ -43,7 +49,7 @@ int main(int argc, char* argv[])
             }
         }
 
-        
+        // updating the clock for next cycle
         updateClock();
     }
 }
@@ -57,7 +63,6 @@ void initSimulator(char* imemin, char* regout, char* trace, char* hwregtrace)
     regoutFile = regout;
     traceFile = trace;
     hwregtraceFile = hwregtrace;
-
 
 }
 
@@ -114,13 +119,16 @@ void initInstructions(char* fileName)
 
     while (fgets(line, lineLength, fp))
     {
+        //reading every line into a temporary data structure
         strcpy(tempOrigInstructions[instructions->length] , line);
         tempOrigInstructions[instructions->length][12] = '\0';
 
+        // reading instruction and converting to int array
         addInstruction(tempInstructions, line, instructions->length);
         (instructions->length)++;
     }
 
+    // allocating the main instruction data structure
     instructions-> instructionArr = (int**)calloc(instructions->length, sizeof(int*));
     if (!instructions->instructionArr)
     {
@@ -128,6 +136,7 @@ void initInstructions(char* fileName)
         exit(1);
     }
 
+    // saving the original instructions fot the output trace file
     instructions-> originalInst = (char**)calloc(instructions->length, sizeof(char*));
     if (!instructions->originalInst)
     {
@@ -136,7 +145,7 @@ void initInstructions(char* fileName)
     }
 
    
-
+    // copying from the temp d.s. to the main d.s.
     for (int i = 0; i < instructions->length; i++)
     {
         instructions->instructionArr[i] = tempInstructions[i];
@@ -153,6 +162,7 @@ void addInstruction(int** arr, char* line, int index)
 
     line[12] = '\0';
     ins = strtoll(line, NULL, 16);
+    //reading bits to a temp array
     for (int i = 0; i < 48; i++)
     {
         bit = ins & 1;
@@ -183,6 +193,7 @@ void addInstruction(int** arr, char* line, int index)
     arr[index][6] = imm2;
 }
 
+//converting int to binary
 int getIntFrombinary(int* binaryIns, int start, int end)
 {
     int val = 0;
