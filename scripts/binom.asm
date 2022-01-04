@@ -1,18 +1,18 @@
-	lw $a0, $zero, $imm1, $zero, 0x100, 0        #init a0 to n
-	lw $a1, $zero, $imm1, $zero, 0x101, 0        #init a1 to k
-	add $sp, $zero, $imm1, $zero, 2048, 0        #init sp to top of the stack
-    jal $ra,$zero,$zero,$imm2,0,BIN              #jump to the recursive function, when returning to this point it means we are done
-  	sw $v0, $zero, $imm1, $zero, 0x102, 0        #saving the result in v0 to the memory
-	halt $zero, $zero, $zero, $zero, 0, 0        #halt
+	lw $a0, $zero, $imm1, $zero, 0x100, 0         #init a0 to n
+	lw $a1, $zero, $imm1, $zero, 0x101, 0         #init a1 to k
+	add $sp, $zero, $imm1, $zero, 2048, 0         #init sp to top of the stack
+    jal $ra,$zero,$zero,$imm2,0,BIN               #jump to the recursive function, when returning to this point it means we are done
+  	sw $v0, $zero, $imm1, $zero, 0x102, 0         #saving the result in v0 to the memory
+	halt $zero, $zero, $zero, $zero, 0, 0         #halt
 
 BIN:
-    add $sp,$sp,$zero,$imm1,-3,0                 # handling the stack address
-    sw $zero,$sp,$imm1,$ra,2,0                   #saving ra
-    sw $zero,$sp,$imm1,$s0,1,0                   #saving s0
-    sw $zero,$sp,$imm1,$s1,0,0                   #saving s1
+    add $sp,$sp,$zero,$imm1,-3,0                  #handling the stack address
+    sw $zero,$sp,$imm1,$ra,2,0                    #saving ra
+    sw $zero,$sp,$imm1,$s0,1,0                    #saving s0
+    sw $zero,$sp,$imm1,$s1,0,0                    #saving s1
 
-    beq $zero,$a1,$zero,$imm2,0,HALT_CONDITION   #halt condition 1, if k == 0 then return
-    beq $zero,$a0,$a1,$imm2,0,HALT_CONDITION     #halt condition 2, if k == n then return
+    beq $zero,$a1,$zero,$imm2,0,HALT_CONDITION    #halt condition 1, if k == 0 then return
+    beq $zero,$a0,$a1,$imm2,0,HALT_CONDITION      #halt condition 2, if k == n then return
 
     add $s0,$a0,$zero,$zero,0,0                   #moving n to s0
     add $s1,$a1,$zero,$zero,0,0                   #moving k to s1
