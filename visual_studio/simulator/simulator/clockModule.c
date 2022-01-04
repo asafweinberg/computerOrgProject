@@ -58,6 +58,7 @@ int writeClock(int address, int value)
         timerEnabled = value;
         if (value != 0 && value != 1)
         {
+            //todo
             printf("error on write clock, needs to check how to approach to timerEnable not boolean, given value = %d", timerEnabled);
         }
         break;

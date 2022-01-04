@@ -174,7 +174,7 @@ void exitDisk()
     FILE* diskOutFile = fopen(diskOutAddress,"w");
     if (!diskOutFile) {
         printf("error in exitDisk in writing to diskout: %s\n", diskOutAddress);
-        exit(1);
+         exit(1);
     }
     for(i = 0; i < lastIndex ; i++) {
 		fprintf(diskOutFile, "%08X\n", disk[i / sectorSize][i % sectorSize]);

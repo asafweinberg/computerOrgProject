@@ -63,3 +63,6 @@ visual_studio/simulator/.vs/*
 visual_studio/assembler/x64/*
 visual_studio/assembler/assembler/x64/*
 visual_studio/assembler/.vs/*
+
+visual_studio/simulator/simulator/*.txt*
+visual_studio/simulator/simulator/leds.txt
