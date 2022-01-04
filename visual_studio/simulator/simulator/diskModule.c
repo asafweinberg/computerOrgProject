@@ -145,7 +145,11 @@ void executeDisk(int actionType)
 
 void readSector()
 {
+    //TODO: check num
     int i;
+    if (disksector<0 || disksector>sectorSize) {
+        return;
+    }
     for (i = 0; i < sectorSize; i++) {
         if (diskbuffer + i == memorySize) {
             break;
@@ -156,7 +160,11 @@ void readSector()
 
 void writeSector()
 {
+    //TODO: check num
     int i;
+    if (disksector<0 || disksector>sectorSize) {
+        return;
+    }
     for (i = 0; i < sectorSize; i++) {
         if (diskbuffer + i == memorySize) {
             break;

@@ -26,7 +26,7 @@ typedef struct
 }labelAddress; 
 
 labelAddress labelAddressTable[MAX_INSTRUCTIONS_COUNT];
-char commandParts[7][100] = {"","","","","","",""}; // TODO change to less than 100 maybe
+char commandParts[7][100] = {"","","","","","",""}; 
 
 int dataMemory [MAX_DATA_MEMORY_LEN];
 
@@ -44,9 +44,8 @@ int isDataCommand(char* line);
 void passOne(char * fileName);
 void passTwo(char * progInst, char * instMem, char * dataMem);
 
-// void printlabelAddressTable();
 
-
+// main runs pass1 then pass2
 int main(int argc, char *argv[])
 {
     char * progInst = argv[1];  //program.asm
@@ -65,7 +64,7 @@ int main(int argc, char *argv[])
     }
 }
 
-
+// the function gets a line and removes characters after '#' (include '#').
 void removeComments(char* line)
 {
     char* pos;
@@ -74,13 +73,14 @@ void removeComments(char* line)
 		(*pos) = 0;
 }
 
-void changeToLowerCase(char* line)
-{
-    int i;
-    for (i=0; line[i]; i++)
-        line[i] = tolower(line[i]);		
-}
+// void changeToLowerCase(char* line)
+// {
+//     int i;
+//     for (i=0; line[i]; i++)
+//         line[i] = tolower(line[i]);		
+// }
 
+//if the command is of ".word" type the function replaces the command with empty line
 void skipDataInst(char* line)
 {
     char* pos;
@@ -89,15 +89,7 @@ void skipDataInst(char* line)
 		(*pos) = 0;
 }
 
-// int emptyLine(char* line)
-// {
-//     int i;
-//     for (i=0; line[i]; i++)
-//         if(line[i] != ' ' && line[i] != '\t' && line[i] != '\n') 
-//         	return(false);	 
-// 	return(true);			
-// }
-
+// the function return true if the line is empty and false otherwise
 int emptyLine(char* line)
 {
     if (line[0]==0)
@@ -107,6 +99,7 @@ int emptyLine(char* line)
     return false;
 }
 
+// the function deletes white spaces - tab white space and enter from the line
 void deleteWhiteSpaces(char * line)
 {
     int i = 0, j = 0;
@@ -120,30 +113,13 @@ void deleteWhiteSpaces(char * line)
 	
 }
 
-// void sliceLabelCommand(char * line , char ** labelStr, char ** commStr)
-// {
-//     if
-//     for (in i=0 ; i < line.lenght() ; i++)
-//     {
-//         if (line.charAt(i)==':')
-//         {
-
-//         }
-//     }
-// }
-
+// The function gets the pure command string without labels, and place the correct parts of the command in "commandParts" array.
 void breakCommand(char * command)
 {
     char* sep = ",", * registers, * typeCommand;
     int i=1;
-    // char* command;
     char commandDestroy[MAX_LINE_LEN+1];
     strcpy(commandDestroy,command);
-    // printf("with dots: %s\n",commandWithDots);
-
-    // strcpy(command, commandWithDots+1); //without ':'
-
-    // printf("no dots: %s\n",command);
 
     registers=strchr(command, '$');
     typeCommand=strtok(commandDestroy,"$");
@@ -151,8 +127,6 @@ void breakCommand(char * command)
     strcpy(commandParts[0], typeCommand);
     char* token = strtok(registers, sep);
   
-    // Keep printing tokens while one of the 
-    // delimiters present in str[]. 
     while(token!=NULL)
 	{
         strcpy(commandParts[i], token); 
@@ -162,6 +136,7 @@ void breakCommand(char * command)
 	return;
 }
 
+// The function gets a line, returns true if the line had a command in it. If the command also had a label, it puts the label in potenLabel. if pass == 2 and there was a command, it also breaks it into parts.
 int handleInstr(char * line , char ** potenLabel , int pass) //3 cases as we described
 {
     *potenLabel="";
@@ -178,9 +153,6 @@ int handleInstr(char * line , char ** potenLabel , int pass) //3 cases as we des
 
     // *potenLabel= strtok(line, ":");
     // potenCommand= strtok(NULL, ":");
-
-    // printf("afterlabel string: %s\n",afterLabel);
-    // printf("potenCommand string: %s\n",potenCommand);
 
     if (afterLabel!=NULL)  //there is a label - so now only label or both
     {
