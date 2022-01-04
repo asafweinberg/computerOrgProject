@@ -4,7 +4,8 @@
 #define MONITOR_LEN 256
 
 unsigned short monitoraddr;
-short monitordata;
+//short monitordata;
+int8_t monitordata; //TODO: check if working
 int monitorcmd;
 unsigned char monitorBuffer[MONITOR_LEN][MONITOR_LEN];
 char *ouputTxt, *outputYuv;
@@ -49,13 +50,13 @@ int writeMonitor(int address, int value)
     switch (address)
     {
     case IO_MONITOR_ADDR:
-        monitoraddr = value; //TODO: convert to short
+        monitoraddr = value;
         break;
     case IO_MONITOR_CMD:
         writePixel(value);
         break;
     case IO_MONITOR_DATA:
-        monitordata = (short)value; //TODO: convert to char
+        monitordata = (int8_t)value; //TODO: convert to char
         break;
     default:
         printf("writeMonitor got a wrong io register number: %d", address);

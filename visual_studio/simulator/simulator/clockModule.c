@@ -83,7 +83,7 @@ void exitClock()
         printf("error opening output file for clock with name: %s", clockOutputFileName);
         return;
     }
-    fprintf(fp, "%lu", clockCycles);
+    fprintf(fp, "%lu", clockCycles + 1);
     fclose(fp);
 }
 
@@ -103,7 +103,7 @@ int updateClock()
 
     if (timerEnabled)
     {
-        if (timercurrent == timerMax)
+        if (timercurrent == timerMax-1)
         {
             timercurrent = 0;
             interrupt0 = 1;

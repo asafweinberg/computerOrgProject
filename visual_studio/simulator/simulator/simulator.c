@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
 
     while (pc < instructions->length) // todo: check condition
     {
-        if (getClockCycles() == 111)
+        if (getClockCycles() == 111) //TODO: Delete
         {
             debug = 1;
         }

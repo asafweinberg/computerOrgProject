@@ -20,6 +20,7 @@ void initMemory(char* dmemin, char* dmemout)
     int counter = 0;
     int i;
 
+
     FILE* memFile = fopen(dmemin, "r");
     if (!memFile)
     {
@@ -47,14 +48,20 @@ void initMemory(char* dmemin, char* dmemout)
 
 int readMemory(int address) {
     if (address >= memorySize || address < 0) {
+<<<<<<< HEAD
         printf("error in readMemory with address number: %i", address);
         exit(1); // TODO: think what to do, the requirements are not to exit
+=======
+        //printf("error in readMemory with address number: %i", address);
+        //exit(1);
+        return; // TODO: think what to do, the requirements are not to exit
+>>>>>>> main
     }
     return memory[address];
 }
 void writeMemory(int address, int32_t value) {
     if (address >= memorySize || address < 0) {
-        printf("error in writeMemory with address number: %i", address);
+        //printf("error in writeMemory with address number: %i", address);
         //exit(1);
         return; // TODO: think what to do, the requirements are not to exit
     }
