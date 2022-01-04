@@ -104,7 +104,7 @@ int updateClock()
 
     if (timerEnabled)
     {
-        if (timercurrent == timerMax)
+        if (timercurrent == timerMax-1)
         {
             timercurrent = 0;
             interrupt0 = 1;
