@@ -48,7 +48,7 @@ void initMemory(char* dmemin, char* dmemout)
 int readMemory(int address) {
     if (address >= memorySize || address < 0) {
         printf("error in readMemory with address number: %i", address);
-        exit(1);
+        exit(1); // TODO: think what to do, the requirements are not to exit
     }
     return memory[address];
 }
@@ -69,7 +69,7 @@ void exitMemory() {
     FILE* dmemoutFile = fopen(dmemoutAddress, "w");
     if (!dmemoutFile) {
         printf("error in exitMemory in writing to dmemout: %s\n", dmemoutAddress);
-        exit(1);
+        exit(1); // TODO: think what to do, the requirements are not to exit SO PUT RETURN;
     }
     for (i = 0; i <= lastIndex; i++) {
         fprintf(dmemoutFile, "%08X\n", memory[i]);

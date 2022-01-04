@@ -76,6 +76,7 @@ void writePixel(int value)
     {
         printf("error in getPixelData in readMonitor, row = %d, col = %d", row, col);
         exit(1);
+        // TODO: think what to do, the requirements are not to exit SO PUT RETURN;
     }
     
     monitorBuffer[monitoraddr / MONITOR_LEN][monitoraddr % MONITOR_LEN] = (unsigned char) monitordata;
