@@ -58,10 +58,11 @@ void initDisk(char* diskin, char* diskout)
 void diskUpdate()
 {
     currentClock = getClockCycles();
-    if (currentClock == lastClockStamp + 1024)
+    if (currentClock == lastClockStamp + 1025) //TODO check if 1023
     {
         executeDisk(diskcmd);
         diskstatus = 0; //free to get more instructions
+        printf("%d\n", currentClock);
     }
     // diskstatus = 0; //free to get more instructions
     // diskcmd = 0;
@@ -102,6 +103,8 @@ int writeDisk(int address, int value)
                 if (address != 0) {
                     diskstatus = 1;
                     lastClockStamp = getClockCycles();
+                    printf("stamp: %d\n", lastClockStamp);
+
                 }
             }
             break;
@@ -176,7 +179,7 @@ void exitDisk()
         printf("error in exitDisk in writing to diskout: %s\n", diskOutAddress);
         exit(1);
     }
-    for(i = 0; i < lastIndex ; i++) {
+    for(i = 0; i <= lastIndex ; i++) {
 		fprintf(diskOutFile, "%08X\n", disk[i / sectorSize][i % sectorSize]);
     }
     fclose(diskOutFile);
