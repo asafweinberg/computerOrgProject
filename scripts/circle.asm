@@ -91,4 +91,4 @@ TURNONPIXEL:
 END:
 	halt $zero, $zero, $zero, $zero, 0, 0
 
-.word 0x100 50											# radius = 50 check
+.word 0x100 100											# radius = 50 check
